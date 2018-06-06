@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.ar.sceneform.samples.solarsystem;
+package com.wright.android.t_minus;
 
 import android.Manifest;
 import android.app.Activity;
@@ -30,6 +30,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
+
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.Config;
 import com.google.ar.core.Session;
@@ -40,7 +41,7 @@ import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 
 /** Static utility methods to simplify creating multiple demo activities. */
-public class DemoUtils {
+public class ArUtils {
   private static final String TAG = "SceneformDemoUtils";
   /**
    * Creates and shows a Toast containing an error message. If there was an exception passed in it
@@ -60,14 +61,9 @@ public class DemoUtils {
       Log.e(tag, errorMsg);
       toastText = errorMsg;
     }
-
-    new Handler(Looper.getMainLooper())
-        .post(
-            () -> {
-              Toast toast = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
-              toast.setGravity(Gravity.CENTER, 0, 0);
-              toast.show();
-            });
+    Toast toast = Toast.makeText(context, toastText, Toast.LENGTH_LONG);
+    toast.setGravity(Gravity.CENTER, 0, 0);
+    toast.show();
   }
 
   /**
