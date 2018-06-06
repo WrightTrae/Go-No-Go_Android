@@ -1,0 +1,57 @@
+{
+  "users": {
+    "UUID": {
+      "Name": "Test Name",
+      "Email": "test@account.com",
+      "Claimed Buisnesses": {
+        "testBuisnessID": {
+          "Role": "Admin"
+        }
+      }
+    }
+  },
+  "Buisnesses": {
+    "testBuisnessID": {
+      "isVerfied": false,
+      "Details": {
+        "Name": "Test Name",
+        "Address": "1234 south",
+        "Description": "We make food...",
+        "Hours_of_operation": {
+          "Monday": {
+            "open": "9:00am",
+            "close": "10:00pm"
+          }
+        }
+      },
+      "Comments": {
+        "Unique ID": {
+          "name": "Test name",
+          "text": "......"
+        }
+      },
+      "Special": [
+        "2 for 1 draft beers",
+        "Test Special"
+      ]
+    }
+  },
+  "Launch pads": {
+    "Pad Name": {
+      "Longitude": 12,
+      "Latitude": 12
+    }
+  },
+  "Image Paths": {
+    "Launch Name": {
+      "folder path": "....",
+      "images": {
+        "Unique ID": {
+          "path": "....",
+          "likes": "12",
+          "userId": "USER ID"
+        }
+      }
+    }
+  }
+}
