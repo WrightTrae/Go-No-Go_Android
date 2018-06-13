@@ -36,12 +36,19 @@
       ]
     }
   },
-  "Launch pads": {
-    "Pad Name": {
-      "Longitude": 12,
-      "Latitude": 12
-    }
-  },
+  "launch_pads": {
+"LAUNCH_PAD_ID": {
+"name": "LAUNCH_PAD_NAME",
+"latitude": 0,
+"longitude": 0,
+"locationId": "LOCATION_ID"
+}
+},
+"launch_locations": {
+"LOCATION_ID": {
+"name": "LOCATION_NAME"
+}
+},
   "Image Paths": {
     "Launch Name": {
       "folder path": "....",
