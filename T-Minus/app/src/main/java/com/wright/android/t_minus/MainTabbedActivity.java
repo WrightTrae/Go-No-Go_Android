@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,7 @@ public class MainTabbedActivity extends AppCompatActivity implements TabLayout.O
     private LaunchesSectionsPagerAdapter launchesSectionsPagerAdapter;
     private TabLayout tabLayout;
     private TabLayout launchesTab;
+    private Toolbar toolbar;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -45,7 +47,11 @@ public class MainTabbedActivity extends AppCompatActivity implements TabLayout.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tabbed);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        toolbar.setLogo(R.drawable.logo_outline);
+
         setSupportActionBar(toolbar);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         launchesSectionsPagerAdapter = new LaunchesSectionsPagerAdapter(getSupportFragmentManager());
@@ -79,8 +85,8 @@ public class MainTabbedActivity extends AppCompatActivity implements TabLayout.O
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main_tabbed, menu);
+        toolbar.setForegroundGravity(Gravity.CENTER_HORIZONTAL);
         return true;
     }
 

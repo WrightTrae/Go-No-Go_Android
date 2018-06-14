@@ -3,9 +3,6 @@
 // GetManifestsFromAPI.java
 package com.wright.android.t_minus.networkConnection;
 
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
 import com.squareup.picasso.Picasso;
@@ -34,7 +31,7 @@ public class GetManifestsFromAPI extends AsyncTask<String, Void, Manifest[]> {
 
     @Override
     protected Manifest[] doInBackground(String... _params) {
-        ArrayList<Manifest> ManifestArrayList = parseJSON(NetworkUtils.getNetworkData("https://launchlibrary.net/1.3/launch?next=10&mode=verbose"));
+        ArrayList<Manifest> ManifestArrayList = parseJSON(NetworkUtils.getNetworkData("https://launchlibrary.net/1.3/launch?next=50&mode=verbose"));
         return ManifestArrayList.toArray(new Manifest[ManifestArrayList.size()]);
     }
 
@@ -50,14 +47,10 @@ public class GetManifestsFromAPI extends AsyncTask<String, Void, Manifest[]> {
                 String location  = obj.getJSONObject("location").getJSONArray("pads").getJSONObject(0).getString("name");
 
                 String imageURL = obj.getJSONObject("rocket").getString("imageURL");
-                Bitmap image= null;
-                if(!imageURL.equals("https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png")) {
-                    image = Picasso.get().load(imageURL).placeholder(R.drawable.logo_outline).get();
-                }
-                ManifestArrayList.add(new Manifest(title,time,location,image));
+                ManifestArrayList.add(new Manifest(title,time,location,null,imageURL));
             }
             return ManifestArrayList;
-        } catch (JSONException | IOException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return ManifestArrayList;

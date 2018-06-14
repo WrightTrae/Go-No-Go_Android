@@ -74,7 +74,14 @@ public class ManifestListAdapter extends BaseAdapter {
             vh.tvTitle.setText(manifest.getTitle());
             vh.tvTime.setText(manifest.getTime());
             vh.tvLocation.setText(manifest.getLocation());
-            vh.tvImage.setImageBitmap(manifest.getImage());
+            if(!manifest.getImageUrl().equals("https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png")){
+                Picasso picasso = Picasso.get();
+                picasso.setIndicatorsEnabled(true);
+                picasso.load(manifest.getImageUrl()).fit().centerCrop()
+                        .placeholder(R.drawable.logo_outline).into(vh.tvImage);
+            }else {
+                vh.tvImage.setImageDrawable(mContext.getDrawable(R.drawable.logo_outline));
+            }
         }
         return _recycleView;
     }

@@ -11,12 +11,18 @@ public class Manifest {
     private String time;
     private String location;
     private Bitmap image;
+    private String imageUrl;
 
-    public Manifest(String title, String time, String location, Bitmap image) {
+    public Manifest(String title, String time, String location, Bitmap image, String imageUrl) {
         this.title = title;
         this.time = time;
         this.location = location;
         this.image = image;
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public String getTitle() {
