@@ -1,11 +1,6 @@
-package com.wright.android.t_minus.Launches;
+package com.wright.android.t_minus.Launches.Manifest;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.wright.android.t_minus.Manifest;
+import com.wright.android.t_minus.Objects.Manifest;
 import com.wright.android.t_minus.R;
 
 
-public class ManifestListAdapter extends BaseAdapter {
+public class ManifestListAdapter extends BaseAdapter{
     // BASE ID
     private static final long BASE_ID = 0x100000;
 
@@ -29,13 +24,9 @@ public class ManifestListAdapter extends BaseAdapter {
     private Manifest[] manifests;
 
     // C-tor
-    public ManifestListAdapter(Context _context){
+    public ManifestListAdapter(Context _context, Manifest[] manifests){
         mContext = _context;
-        this.manifests = new Manifest[0];
-    }
-
-    public void updateData(Manifest[] _manifests){
-        manifests = _manifests;
+        this.manifests = manifests;
     }
 
     // Count
@@ -73,7 +64,7 @@ public class ManifestListAdapter extends BaseAdapter {
         if(manifest!=null){
             vh.tvTitle.setText(manifest.getTitle());
             vh.tvTime.setText(manifest.getTime());
-            vh.tvLocation.setText(manifest.getLocation());
+            vh.tvLocation.setText(manifest.getPadLocation().getName());
             if(!manifest.getImageUrl().equals("https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png")){
                 Picasso picasso = Picasso.get();
                 picasso.setIndicatorsEnabled(true);
@@ -95,8 +86,8 @@ public class ManifestListAdapter extends BaseAdapter {
 
         private ViewHolder(View _layout){
             tvTitle = _layout.findViewById(R.id.cellMissionTitle);
-            tvTime = _layout.findViewById(R.id.cellNETTime);
-            tvLocation = _layout.findViewById(R.id.cellLocation);
+            tvTime = _layout.findViewById(R.id.detailsNETTime);
+            tvLocation = _layout.findViewById(R.id.detailsLocation);
             tvImage = _layout.findViewById(R.id.cellImage);
         }
     }

@@ -4,10 +4,9 @@
     
     tools:context="com.wright.android.t_minus.MainTabbedActivity">
     <item
-        android:id="@+id/action_settings"
-
-        android:orderInCategory="100"
-        android:icon="@drawable/settings"
-        android:title="@string/action_settings"
-        app:showAsAction="always" />
+    android:id="@+id/action_settings"
+    android:orderInCategory="100"
+    android:icon="@drawable/settings"
+    android:title="@string/action_settings"
+    app:showAsAction="always" />
 </menu>

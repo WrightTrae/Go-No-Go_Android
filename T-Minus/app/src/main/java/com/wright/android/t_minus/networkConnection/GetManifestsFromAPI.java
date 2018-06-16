@@ -5,15 +5,13 @@ package com.wright.android.t_minus.networkConnection;
 
 import android.os.AsyncTask;
 
-import com.squareup.picasso.Picasso;
-import com.wright.android.t_minus.Manifest;
-import com.wright.android.t_minus.R;
+import com.wright.android.t_minus.Objects.Manifest;
+import com.wright.android.t_minus.Objects.PadLocation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -44,16 +42,52 @@ public class GetManifestsFromAPI extends AsyncTask<String, Void, Manifest[]> {
                 JSONObject obj = hitsJson.getJSONObject(i);
                 String title = obj.getString("name");
                 String time = obj.getString("net");
-                String location  = obj.getJSONObject("location").getJSONArray("pads").getJSONObject(0).getString("name");
-
+                String probability = obj.getString("probability");
+                String windowStart = obj.getString("windowstart");
+                String windowEnd = obj.getString("windowend");
+                int statusId = obj.getInt("status");
+                String status = parseStatus(statusId);
+                String missionProvider = obj.getJSONObject("lsp").getString("name");
+                JSONObject locationObj = obj.getJSONObject("location");
+                String location  = locationObj.getString("name");
+                int locationId  = locationObj.getInt("id");
+                String countryCode  = locationObj.getString("countryCode");
                 String imageURL = obj.getJSONObject("rocket").getString("imageURL");
-                ManifestArrayList.add(new Manifest(title,time,location,null,imageURL));
+                JSONArray urlArray = obj.getJSONArray("vidURLs");
+                String url = null;
+                if(urlArray.length() != 0){
+                    url = urlArray.getString(0);
+                }
+                ManifestArrayList.add(new Manifest(title,time,imageURL, new PadLocation(locationId,location,countryCode),
+                        status, probability, windowStart, windowEnd, missionProvider, url));
             }
+
             return ManifestArrayList;
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return ManifestArrayList;
+    }
+
+    private String parseStatus(int id){
+        switch (id){
+            case 1:
+                return "Launch is GO";
+            case 2:
+                return "Launch is NO-GO";
+            case 3:
+                return "Launch was a success";
+            case 4:
+                return "Launch failed";
+            case 5:
+                return "Unplanned hold";
+            case 6:
+                return "Vehicle is in flight";
+            case 7:
+                return "There was a partial failure during launch";
+            default:
+                return "Unknown";
+        }
     }
 
     @Override

@@ -34,11 +34,11 @@
             android:textColor="@android:color/background_light"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/cellNETTime"
+            app:layout_constraintBottom_toTopOf="@id/detailsNETTime"
             android:paddingTop="10dp"/>
 
         <TextView
-            android:id="@+id/cellNETTime"
+            android:id="@+id/detailsNETTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
@@ -48,10 +48,10 @@
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/cellLocation" />
+            app:layout_constraintBottom_toTopOf="@id/detailsLocation" />
 
         <TextView
-            android:id="@+id/cellLocation"
+            android:id="@+id/detailsLocation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"

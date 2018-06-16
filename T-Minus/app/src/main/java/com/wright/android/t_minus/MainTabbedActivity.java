@@ -16,29 +16,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.wright.android.t_minus.Launches.LaunchPad.LaunchPadFragment;
 import com.wright.android.t_minus.Launches.MainLaunchesFragment;
-import com.wright.android.t_minus.Launches.ManifestFragment;
-import com.wright.android.t_minus.Launches.PadFragment;
+import com.wright.android.t_minus.Launches.Manifest.ManifestFragment;
+import com.wright.android.t_minus.Objects.Manifest;
+import com.wright.android.t_minus.Objects.PadLocation;
+import com.wright.android.t_minus.networkConnection.GetManifestsFromAPI;
+import com.wright.android.t_minus.networkConnection.NetworkUtils;
 
-public class MainTabbedActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener{
+import java.util.ArrayList;
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-    private LaunchesSectionsPagerAdapter launchesSectionsPagerAdapter;
-    private TabLayout tabLayout;
+public class MainTabbedActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, GetManifestsFromAPI.OnFinished{
+
     private TabLayout launchesTab;
     private Toolbar toolbar;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
+    private LaunchPadFragment launchPadFragment;
+    private ManifestFragment manifestFragment;
     private ViewPager mMainViewPager;
     private ViewPager mLaunchViewPager;
 
@@ -47,23 +40,18 @@ public class MainTabbedActivity extends AppCompatActivity implements TabLayout.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tabbed);
 
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         toolbar.setLogo(R.drawable.logo_outline);
-
         setSupportActionBar(toolbar);
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        launchesSectionsPagerAdapter = new LaunchesSectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
-        mMainViewPager = (ViewPager) findViewById(R.id.container);
-        mMainViewPager.setAdapter(mSectionsPagerAdapter);
+        mMainViewPager = findViewById(R.id.container);
+        mMainViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
 
         mLaunchViewPager = findViewById(R.id.launchesContainer);
-        mLaunchViewPager.setAdapter(launchesSectionsPagerAdapter);
+        mLaunchViewPager.setAdapter(new LaunchesSectionsPagerAdapter(getSupportFragmentManager()));
 
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         mMainViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(this);
 
@@ -71,15 +59,17 @@ public class MainTabbedActivity extends AppCompatActivity implements TabLayout.O
         mLaunchViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(launchesTab));
         launchesTab.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mLaunchViewPager));
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
         onTabSelected(tabLayout.getTabAt(0));
+        downloadManifests();
+    }
+
+    public void downloadManifests(){
+        if(NetworkUtils.isConnected(this)){
+            new GetManifestsFromAPI(this).execute();
+        }else{
+            Snackbar.make(mLaunchViewPager, "No internet connection", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Reload", (View v) -> downloadManifests()).show();
+        }
     }
 
 
@@ -132,6 +122,22 @@ public class MainTabbedActivity extends AppCompatActivity implements TabLayout.O
 
     }
 
+    public boolean containsName(final ArrayList<PadLocation> list, final int name){
+        return list.stream().anyMatch((o -> o.getId() == (name)));
+    }
+
+    @Override
+    public void onFinished(Manifest[] _manifests) {
+        manifestFragment.setData(_manifests);
+        ArrayList<PadLocation> padLocations = new ArrayList<>();
+        for(Manifest manifest:_manifests){
+            if (!containsName(padLocations, manifest.getPadLocation().getId())) {
+                padLocations.add(manifest.getPadLocation());
+            }
+        }
+        launchPadFragment.setData(padLocations);
+    }
+
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -169,11 +175,20 @@ public class MainTabbedActivity extends AppCompatActivity implements TabLayout.O
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return ManifestFragment.newInstance();
+                    if(manifestFragment == null){
+                        manifestFragment = ManifestFragment.newInstance();
+                    }
+                    return manifestFragment;
                 case 1:
-                    return PadFragment.newInstance("","");
+                    if(launchPadFragment == null){
+                        launchPadFragment = LaunchPadFragment.newInstance();
+                    }
+                    return launchPadFragment;
                 default:
-                    return ManifestFragment.newInstance();
+                    if(manifestFragment == null){
+                        manifestFragment = ManifestFragment.newInstance();
+                    }
+                    return manifestFragment;
             }
         }
 
