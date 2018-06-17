@@ -27,7 +27,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-//    implementation 'com.github.appoly:ARCore-PadLocation:1.0.5'
+    implementation 'com.github.appoly:ARCore-Location:1.0.5'
     implementation 'com.google.ar.sceneform:core:1.0.0'
     implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.0.0'
     implementation 'com.android.support:appcompat-v7:27.1.1'

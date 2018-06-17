@@ -1,19 +1,9 @@
 package com.wright.android.t_minus.Launches.Manifest;
 
-import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,8 +12,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.wright.android.t_minus.Objects.Manifest;
 import com.wright.android.t_minus.R;
-
-import java.lang.annotation.Target;
 
 public class ManifestDetailsActivity extends AppCompatActivity {
 
