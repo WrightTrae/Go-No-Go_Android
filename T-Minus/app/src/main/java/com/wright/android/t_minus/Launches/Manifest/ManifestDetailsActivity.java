@@ -57,6 +57,9 @@ public class ManifestDetailsActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.detailsNETTime)).setText(manifest.getTime());
         ((TextView)findViewById(R.id.detailsLocation)).setText(manifest.getPadLocation().getName());
         ((TextView)findViewById(R.id.detailsMissionStatus)).setText(manifest.getStatus());
+        if(manifest.getStatus().toLowerCase().equals("launch is go")){
+            findViewById(R.id.detailsMissionStatus).setBackgroundColor(getColor(R.color.transparentGreen));
+        }
         ((TextView)findViewById(R.id.detailsProbability)).setText(String.format(getString(R.string.probability), manifest.getProbability()));
         ((TextView)findViewById(R.id.detailsWindowStart)).setText(String.format(getString(R.string.window_start), manifest.getWindowStart()));
         ((TextView)findViewById(R.id.detailsWindowEnd)).setText(String.format(getString(R.string.window_end), manifest.getWindowEnd()));

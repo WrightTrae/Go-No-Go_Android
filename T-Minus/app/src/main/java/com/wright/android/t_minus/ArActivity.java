@@ -4,26 +4,15 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.location.LocationServices;
-import com.google.ar.core.Anchor;
-import com.google.ar.core.AugmentedImage;
-import com.google.ar.core.Config;
 import com.google.ar.core.Frame;
-import com.google.ar.core.Plane;
-import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
 import com.google.ar.core.TrackingState;
 import com.google.ar.core.exceptions.CameraNotAvailableException;
@@ -36,14 +25,11 @@ import com.wright.android.t_minus.Objects.LaunchPad;
 import com.wright.android.t_minus.Objects.PadLocation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import uk.co.appoly.arcorelocation.LocationMarker;
 import uk.co.appoly.arcorelocation.LocationScene;
-import uk.co.appoly.arcorelocation.utils.ARLocationPermissionHelper;
-import uk.co.appoly.arcorelocation.utils.LocationUtils;
 
 public class ArActivity extends AppCompatActivity{
 
@@ -66,16 +52,13 @@ public class ArActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ar);
         arSceneView = findViewById(R.id.arFrameLayout);
+        setContentView(R.layout.activity_ar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.drawable.logo_outline);
         getSupportActionBar().setTitle("");
         launchPads = new ArrayList<>();
-        boolean cameraPermission = checkCameraPermission();
-        boolean locationPermission = checkLocationPermission();
-
         if(getIntent().hasExtra(ARG_LAUNCH_PAD)){
             launchPads.add((LaunchPad) getIntent().getSerializableExtra(ARG_LAUNCH_PAD));
         }else if(getIntent().hasExtra(ARG_ALL_LAUNCH_PADS)){
@@ -86,7 +69,8 @@ public class ArActivity extends AppCompatActivity{
         }else if(getIntent().hasExtra(ARG_MANIFEST_LAUNCH_PADS)){
             launchPads.addAll((ArrayList<LaunchPad>)getIntent().getSerializableExtra(ARG_MANIFEST_LAUNCH_PADS));
         }
-
+        boolean cameraPermission = checkCameraPermission();
+        boolean locationPermission = checkLocationPermission();
         if(cameraPermission&&locationPermission){
             setupAr();
         }
@@ -101,19 +85,19 @@ public class ArActivity extends AppCompatActivity{
                         (notUsed, throwable) ->
                         {
                             if (throwable != null) {
-                                DemoUtils.displayError(this, "Unable to load renderables", throwable);
+                                ArUtils.displayError(this, "Unable to load renderables", throwable);
                                 return null;
                             }
                             try {
                                 andyRenderable = andy.get();
 
                             } catch (InterruptedException | ExecutionException ex) {
-                                DemoUtils.displayError(this, "Unable to load renderables", ex);
+                                ArUtils.displayError(this, "Unable to load renderables", ex);
                             }
                             return null;
                         });
 
-        DemoUtils.requestCameraPermission(this, 1);
+        ArUtils.requestCameraPermission(this, 1);
 
         arSceneView
                 .getScene()
@@ -131,11 +115,6 @@ public class ArActivity extends AppCompatActivity{
                             if (frame.getCamera().getTrackingState() != TrackingState.TRACKING) {
                                 return;
                             }
-//                            arSession.getAllAnchors().add(arSession.createAnchor(
-//                                    frame.getCamera().getPose()
-//                                            .compose(Pose.makeTranslation(0, 0, -1f))
-//                                            .extractTranslation()));
-
                             if (locationScene == null) {
                                 locationScene = new LocationScene(this, this, arSceneView);
                                 for(LaunchPad launchPad: launchPads){
@@ -164,9 +143,9 @@ public class ArActivity extends AppCompatActivity{
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
                 new AlertDialog.Builder(this)
-                        .setTitle("NO")
-                        .setMessage("LOC")
-                        .setPositiveButton("K", new DialogInterface.OnClickListener() {
+                        .setTitle("Location Permission Needed")
+                        .setMessage("Please allow location permission for AR viewer")
+                        .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
@@ -204,9 +183,9 @@ public class ArActivity extends AppCompatActivity{
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
                 new AlertDialog.Builder(this)
-                        .setTitle("NO")
-                        .setMessage("LOC")
-                        .setPositiveButton("K", new DialogInterface.OnClickListener() {
+                        .setTitle("Camera Permission Needed")
+                        .setMessage("Please allow camera permission for AR viewer")
+                        .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
@@ -284,15 +263,15 @@ public class ArActivity extends AppCompatActivity{
             // If the session wasn't created yet, don't resume rendering.
             // This can happen if ARCore needs to be updated or permissions are not granted yet.
             try {
-                Session session = DemoUtils.createArSession(this, installRequested);
+                Session session = ArUtils.createArSession(this, installRequested);
                 if (session == null) {
-                    installRequested = DemoUtils.hasCameraPermission(this);
+                    installRequested = ArUtils.hasCameraPermission(this);
                     return;
                 } else {
                     arSceneView.setupSession(session);
                 }
             } catch (UnavailableException e) {
-                DemoUtils.handleSessionException(this, e);
+                ArUtils.handleSessionException(this, e);
             }
         }
 
@@ -303,7 +282,7 @@ public class ArActivity extends AppCompatActivity{
         try {
             arSceneView.resume();
         } catch (CameraNotAvailableException ex) {
-            DemoUtils.displayError(this, "Unable to get camera", ex);
+            ArUtils.displayError(this, "Unable to get camera", ex);
             finish();
             return;
         }

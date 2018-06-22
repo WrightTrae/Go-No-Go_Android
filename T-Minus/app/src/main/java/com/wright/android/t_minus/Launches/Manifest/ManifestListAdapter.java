@@ -67,7 +67,7 @@ public class ManifestListAdapter extends BaseAdapter{
             vh.tvLocation.setText(manifest.getPadLocation().getName());
             if(!manifest.getImageUrl().equals("https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png")){
                 Picasso picasso = Picasso.get();
-                picasso.setIndicatorsEnabled(true);
+//                picasso.setIndicatorsEnabled(true);
                 picasso.load(manifest.getImageUrl()).fit().centerCrop()
                         .placeholder(R.drawable.logo_outline).into(vh.tvImage);
             }else {

@@ -6,5 +6,6 @@
     <color name="primaryButton">#F57E1a</color>
     <color name="primaryButtonPressed">#F57E1a</color>
     <color name="secondaryButton">#FFFFFF</color>
-    <color name="transparentBack">#80000000</color>
+    <color name="transparentBack">#70000000</color>
+    <color name="transparentGreen">#7000BA4A</color>
 </resources>

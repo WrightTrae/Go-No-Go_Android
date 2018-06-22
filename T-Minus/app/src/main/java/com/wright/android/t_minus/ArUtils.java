@@ -41,7 +41,7 @@ import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException;
 
 /** Static utility methods to simplify creating multiple demo activities. */
-public class DemoUtils {
+public class ArUtils {
   private static final String TAG = "SceneformDemoUtils";
   /**
    * Creates and shows a Toast containing an error message. If there was an exception passed in it
@@ -71,18 +71,6 @@ public class DemoUtils {
             });
   }
 
-  /**
-   * Creates an ARCore session. This checks for the CAMERA permission, and if granted, checks the
-   * state of the ARCore installation. If there is a problem an exception is thrown. Care must be
-   * taken to update the installRequested flag as needed to avoid an infinite checking loop. It
-   * should be set to true if null is returned from this method, and called again when the
-   * application is resumed.
-   *
-   * @param activity - the activity currently active.
-   * @param installRequested - the indicator for ARCore that when checking the state of ARCore, if
-   *     an installation was already requested. This is true if this method previously returned
-   *     null. and the camera permission has been granted.
-   */
   public static Session createArSession(Activity activity, boolean installRequested)
       throws UnavailableException {
     Session session = null;
@@ -113,19 +101,6 @@ public class DemoUtils {
   public static boolean hasCameraPermission(Activity activity) {
     return ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA)
         == PackageManager.PERMISSION_GRANTED;
-  }
-  /** Check to see if we need to show the rationale for this permission. */
-  public static boolean shouldShowRequestPermissionRationale(Activity activity) {
-    return ActivityCompat.shouldShowRequestPermissionRationale(
-        activity, Manifest.permission.CAMERA);
-  }
-
-  /** Launch Application Setting to grant permission. */
-  public static void launchPermissionSettings(Activity activity) {
-    Intent intent = new Intent();
-    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-    intent.setData(Uri.fromParts("package", activity.getPackageName(), null));
-    activity.startActivity(intent);
   }
 
   public static void handleSessionException(

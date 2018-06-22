@@ -32,7 +32,6 @@ public class PadAdapter extends BaseExpandableListAdapter {
     }
 
     public long getChildId(int groupPosition, int childPosition) {
-        // TODO Auto-generated method stub
         return childPosition;
     }
 
@@ -49,23 +48,19 @@ public class PadAdapter extends BaseExpandableListAdapter {
     }
 
     public int getChildrenCount(int groupPosition) {
-        // TODO Auto-generated method stub
         ArrayList<LaunchPad> chList = groups.get(groupPosition).getLaunchPads();
         return chList.size();
     }
 
     public Object getGroup(int groupPosition) {
-        // TODO Auto-generated method stub
         return groups.get(groupPosition);
     }
 
     public int getGroupCount() {
-        // TODO Auto-generated method stub
         return groups.size();
     }
 
     public long getGroupId(int groupPosition) {
-        // TODO Auto-generated method stub
         return groupPosition;
     }
 
@@ -78,17 +73,14 @@ public class PadAdapter extends BaseExpandableListAdapter {
         }
         TextView tv = (TextView) view.findViewById(R.id.separator);
         tv.setText(group.getName());
-        // TODO Auto-generated method stub
         return view;
     }
 
     public boolean hasStableIds() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     public boolean isChildSelectable(int arg0, int arg1) {
-        // TODO Auto-generated method stub
         return true;
     }
 
