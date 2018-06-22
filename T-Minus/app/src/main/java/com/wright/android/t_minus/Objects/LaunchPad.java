@@ -1,17 +1,15 @@
 package com.wright.android.t_minus.Objects;
 
-import android.location.Location;
-
 import java.io.Serializable;
 
 // Trae Wright
 // JAV2 - Term Number
 // Java File Name
 public class LaunchPad implements Serializable{
-    private String name;
-    private double latitude;
-    private double longitude;
-    private int locationId;
+    private final String name;
+    private final double latitude;
+    private final double longitude;
+    private final int locationId;
 
     public LaunchPad(String name, double latitude, double longitude, int locationId) {
         this.name = name;

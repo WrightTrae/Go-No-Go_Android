@@ -21,7 +21,7 @@ public class ManifestListAdapter extends BaseAdapter{
     private final Context mContext;
 
     // Reference to our collection
-    private Manifest[] manifests;
+    private final Manifest[] manifests;
 
     // C-tor
     public ManifestListAdapter(Context _context, Manifest[] manifests){

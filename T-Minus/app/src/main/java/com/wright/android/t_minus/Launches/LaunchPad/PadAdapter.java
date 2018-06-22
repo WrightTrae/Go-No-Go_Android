@@ -7,19 +7,15 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.wright.android.t_minus.Objects.LaunchPad;
 import com.wright.android.t_minus.Objects.PadLocation;
 import com.wright.android.t_minus.R;
 
-// Trae Wright
-// JAV2 - Term Number
-// Java File Name
 public class PadAdapter extends BaseExpandableListAdapter {
-    private Context context;
-    private ArrayList<PadLocation> groups;
+    private final Context context;
+    private final ArrayList<PadLocation> groups;
 
     public PadAdapter(Context context, ArrayList<PadLocation> groups) {
         this.context = context;
@@ -39,11 +35,15 @@ public class PadAdapter extends BaseExpandableListAdapter {
                              ViewGroup parent) {
         LaunchPad child = (LaunchPad) getChild(groupPosition, childPosition);
         if (view == null) {
-            LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-            view = infalInflater.inflate(R.layout.pad_content_cell, null);
+            LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (infalInflater != null) {
+                view = infalInflater.inflate(R.layout.pad_content_cell, parent, false);
+            }
         }
-        TextView tv = (TextView) view.findViewById(R.id.cellPadName);
-        tv.setText(child.getName());
+        if(view!=null) {
+            TextView tv = view.findViewById(R.id.cellPadName);
+            tv.setText(child.getName());
+        }
         return view;
     }
 
@@ -68,11 +68,15 @@ public class PadAdapter extends BaseExpandableListAdapter {
                              ViewGroup parent) {
         PadLocation group = (PadLocation) getGroup(groupPosition);
         if (view == null) {
-            LayoutInflater inf = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-            view = inf.inflate(R.layout.pad_header_view, null);
+            LayoutInflater inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if(inf != null) {
+                view = inf.inflate(R.layout.pad_header_view, parent, false);
+            }
         }
-        TextView tv = (TextView) view.findViewById(R.id.separator);
-        tv.setText(group.getName());
+        if(view!=null) {
+            TextView tv = view.findViewById(R.id.separator);
+            tv.setText(group.getName());
+        }
         return view;
     }
 

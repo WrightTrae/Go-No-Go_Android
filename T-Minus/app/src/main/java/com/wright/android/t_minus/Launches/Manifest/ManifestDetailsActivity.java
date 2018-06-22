@@ -24,11 +24,13 @@ public class ManifestDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manifest_details);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if(getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
 //        getSupportActionBar().setDisplayUseLogoEnabled(true);
 //        getSupportActionBar().setLogo(R.drawable.logo_outline);
-        getSupportActionBar().setTitle("");
+            getSupportActionBar().setTitle("");
+        }
         if(getIntent().hasExtra(ARG_MANIFEST)){
             manifest = (Manifest) getIntent().getSerializableExtra(ARG_MANIFEST);
             setUpUi();

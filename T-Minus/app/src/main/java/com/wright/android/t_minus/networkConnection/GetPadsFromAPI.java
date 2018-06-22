@@ -3,8 +3,6 @@ package com.wright.android.t_minus.networkConnection;
 import android.os.AsyncTask;
 
 import com.wright.android.t_minus.Objects.LaunchPad;
-import com.wright.android.t_minus.Objects.Manifest;
-import com.wright.android.t_minus.Objects.PadLocation;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,24 +1,21 @@
 package com.wright.android.t_minus.Objects;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
 import java.io.Serializable;
 
 // Trae Wright
 // JAV2 - Term Number
 // Java File Name
 public class Manifest implements Serializable {
-    private String title;
-    private String time;
-    private String imageUrl;
-    private PadLocation padLocation;
-    private String status;
-    private String probability;
-    private String windowStart;
-    private String windowEnd;
-    private String missionProvider;
-    private String url;
+    private final String title;
+    private final String time;
+    private final String imageUrl;
+    private final PadLocation padLocation;
+    private final String status;
+    private final String probability;
+    private final String windowStart;
+    private final String windowEnd;
+    private final String missionProvider;
+    private final String url;
 
     public Manifest(String title, String time, String imageUrl, PadLocation padLocation, String status, String probability, String windowStart, String windowEnd, String missionProvider, String url) {
         this.title = title;

@@ -26,7 +26,8 @@
             android:layout_height="50dp"
             android:src="@drawable/logo_outline"
             android:id="@+id/toolbar_icon"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="@string/logo" />
         </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout
@@ -40,14 +41,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/manifest_icon"
-                android:text="Manifest" />
+                android:text="@string/manifest" />
 
             <android.support.design.widget.TabItem
                 android:id="@+id/tabItem2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:icon="@drawable/pad_icon"
-                android:text="Launch Pads" />
+                android:text="@string/launch_pads" />
 
             <!--<android.support.design.widget.TabItem-->
                 <!--android:id="@+id/tabItem3"-->

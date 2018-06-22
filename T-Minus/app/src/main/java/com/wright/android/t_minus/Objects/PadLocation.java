@@ -7,9 +7,9 @@ import java.util.ArrayList;
 // JAV2 - Term Number
 // Java File Name
 public class PadLocation implements Serializable{
-    private int id;
-    private String name;
-    private String countryCode;
+    private final int id;
+    private final String name;
+    private final String countryCode;
     private ArrayList<LaunchPad> launchPads;
 
     public PadLocation(int id, String name, String countryCode) {

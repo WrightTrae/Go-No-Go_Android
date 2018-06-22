@@ -16,7 +16,6 @@ import com.wright.android.t_minus.R;
 
 public class ManifestFragment extends Fragment implements ListView.OnItemClickListener{
 
-    private ManifestListAdapter manifestListAdapter;
     private Manifest[] manifests;
 
     public ManifestFragment() {
@@ -41,14 +40,9 @@ public class ManifestFragment extends Fragment implements ListView.OnItemClickLi
         manifests = _manifests;
         getView().findViewById(R.id.manifestProgressBar).setVisibility(View.GONE);
         ListView listView = getView().findViewById(R.id.manifestList);
-        manifestListAdapter = new ManifestListAdapter(getContext(), manifests);
+        ManifestListAdapter manifestListAdapter = new ManifestListAdapter(getContext(), manifests);
         listView.setAdapter(manifestListAdapter);
         listView.setOnItemClickListener(this);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

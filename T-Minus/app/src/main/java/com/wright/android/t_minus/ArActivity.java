@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -20,7 +21,6 @@ import com.google.ar.core.exceptions.UnavailableException;
 import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.ModelRenderable;
-import com.google.ar.sceneform.ux.ArFragment;
 import com.wright.android.t_minus.Objects.LaunchPad;
 import com.wright.android.t_minus.Objects.PadLocation;
 
@@ -34,8 +34,6 @@ import uk.co.appoly.arcorelocation.LocationScene;
 public class ArActivity extends AppCompatActivity{
 
     private ArSceneView arSceneView;
-    private ArFragment arFragment;
-    private Session arSession;
     private Snackbar loadingMessageSnackbar = null;
     private LocationScene locationScene;
     private ModelRenderable andyRenderable;
@@ -46,18 +44,19 @@ public class ArActivity extends AppCompatActivity{
     public static final String ARG_ALL_LAUNCH_PADS = "ARG_ALL_LAUNCH_PADS";
     public static final String ARG_MANIFEST_LAUNCH_PADS = "ARG_MANIFEST_LAUNCH_PADS";
 
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    public static final int MY_PERMISSIONS_REQUEST_CAMERA = 12;
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private static final int MY_PERMISSIONS_REQUEST_CAMERA = 12;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         arSceneView = findViewById(R.id.arFrameLayout);
         setContentView(R.layout.activity_ar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.logo_outline);
-        getSupportActionBar().setTitle("");
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle("");
+        }
         launchPads = new ArrayList<>();
         if(getIntent().hasExtra(ARG_LAUNCH_PAD)){
             launchPads.add((LaunchPad) getIntent().getSerializableExtra(ARG_LAUNCH_PAD));
@@ -130,7 +129,7 @@ public class ArActivity extends AppCompatActivity{
                         });
     }
 
-    public boolean checkLocationPermission() {
+    private boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -145,14 +144,11 @@ public class ArActivity extends AppCompatActivity{
                 new AlertDialog.Builder(this)
                         .setTitle("Location Permission Needed")
                         .setMessage("Please allow location permission for AR viewer")
-                        .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(ArActivity.this,
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION);
-                            }
+                        .setPositiveButton("Okay", (dialogInterface, i) -> {
+                            //Prompt the user once explanation has been shown
+                            ActivityCompat.requestPermissions(ArActivity.this,
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    MY_PERMISSIONS_REQUEST_LOCATION);
                         })
                         .create()
                         .show();
@@ -170,7 +166,7 @@ public class ArActivity extends AppCompatActivity{
         }
     }
 
-    public boolean checkCameraPermission() {
+    private boolean checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -185,14 +181,11 @@ public class ArActivity extends AppCompatActivity{
                 new AlertDialog.Builder(this)
                         .setTitle("Camera Permission Needed")
                         .setMessage("Please allow camera permission for AR viewer")
-                        .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(ArActivity.this,
-                                        new String[]{Manifest.permission.CAMERA},
-                                        MY_PERMISSIONS_REQUEST_CAMERA);
-                            }
+                        .setPositiveButton("Okay", (dialogInterface, i) -> {
+                            //Prompt the user once explanation has been shown
+                            ActivityCompat.requestPermissions(ArActivity.this,
+                                    new String[]{Manifest.permission.CAMERA},
+                                    MY_PERMISSIONS_REQUEST_CAMERA);
                         })
                         .create()
                         .show();
@@ -211,8 +204,7 @@ public class ArActivity extends AppCompatActivity{
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -322,11 +314,9 @@ public class ArActivity extends AppCompatActivity{
         base.setParent(arSceneView.getScene());
         base.setRenderable(andyRenderable);
         Context c = this;
-        base.setOnTapListener((v, event) -> {
-            Toast.makeText(
-                    c, "Launch Pad: "+name, Toast.LENGTH_LONG)
-                    .show();
-        });
+        base.setOnTapListener((v, event) -> Toast.makeText(
+                c, "Launch Pad: "+name, Toast.LENGTH_LONG)
+                .show());
         return base;
     }
 

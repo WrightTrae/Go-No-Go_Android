@@ -1,7 +1,6 @@
 package com.wright.android.t_minus;
 
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,13 +10,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.wright.android.t_minus.Launches.LaunchPad.LaunchPadFragment;
-import com.wright.android.t_minus.Launches.MainLaunchesFragment;
 import com.wright.android.t_minus.Launches.Manifest.ManifestFragment;
 import com.wright.android.t_minus.Objects.Manifest;
 import com.wright.android.t_minus.Objects.PadLocation;
@@ -27,8 +23,6 @@ import com.wright.android.t_minus.networkConnection.NetworkUtils;
 import java.util.ArrayList;
 
 public class MainTabbedActivity extends AppCompatActivity implements GetManifestsFromAPI.OnFinished{
-
-    private Toolbar toolbar;
     private LaunchPadFragment launchPadFragment;
     private ManifestFragment manifestFragment;
     private ViewPager mMainViewPager;
@@ -38,7 +32,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tabbed);
 
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         mMainViewPager = findViewById(R.id.container);
@@ -49,7 +43,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         downloadManifests();
     }
 
-    public void downloadManifests(){
+    private void downloadManifests(){
         if(NetworkUtils.isConnected(this)){
             new GetManifestsFromAPI(this).execute();
         }else{
@@ -66,16 +60,16 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
-    public boolean containsName(final ArrayList<PadLocation> list, final int name){
+    private boolean containsName(final ArrayList<PadLocation> list, final int name){
         return list.stream().anyMatch((o -> o.getId() == (name)));
     }
 
@@ -92,9 +86,9 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
     }
 
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        private SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -116,7 +110,10 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
                 case 3:
 
                 default:
-                    return MainLaunchesFragment.newInstance("","");
+                    if(manifestFragment == null){
+                        manifestFragment = ManifestFragment.newInstance();
+                    }
+                    return manifestFragment;
             }
         }
 
