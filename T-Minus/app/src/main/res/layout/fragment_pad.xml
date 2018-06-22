@@ -37,5 +37,5 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
         app:fabSize="normal"
-        app:srcCompat="@drawable/compass" />
+        app:srcCompat="@drawable/ic_visibility_white_24dp" />
 </FrameLayout>

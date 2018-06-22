@@ -1,9 +1,16 @@
 package com.wright.android.t_minus;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +20,7 @@ import android.widget.Toast;
 import com.google.android.gms.location.LocationServices;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.AugmentedImage;
+import com.google.ar.core.Config;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Plane;
 import com.google.ar.core.Pose;
@@ -24,7 +32,10 @@ import com.google.ar.sceneform.ArSceneView;
 import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.wright.android.t_minus.Objects.LaunchPad;
+import com.wright.android.t_minus.Objects.PadLocation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -43,8 +54,14 @@ public class ArActivity extends AppCompatActivity{
     private LocationScene locationScene;
     private ModelRenderable andyRenderable;
     private boolean installRequested;
+    private ArrayList<LaunchPad> launchPads;
 
     public static final String ARG_LAUNCH_PAD = "ARG_LAUNCH_PAD";
+    public static final String ARG_ALL_LAUNCH_PADS = "ARG_ALL_LAUNCH_PADS";
+    public static final String ARG_MANIFEST_LAUNCH_PADS = "ARG_MANIFEST_LAUNCH_PADS";
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    public static final int MY_PERMISSIONS_REQUEST_CAMERA = 12;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,22 +72,43 @@ public class ArActivity extends AppCompatActivity{
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.drawable.logo_outline);
         getSupportActionBar().setTitle("");
+        launchPads = new ArrayList<>();
+        boolean cameraPermission = checkCameraPermission();
+        boolean locationPermission = checkLocationPermission();
+
+        if(getIntent().hasExtra(ARG_LAUNCH_PAD)){
+            launchPads.add((LaunchPad) getIntent().getSerializableExtra(ARG_LAUNCH_PAD));
+        }else if(getIntent().hasExtra(ARG_ALL_LAUNCH_PADS)){
+            ArrayList<PadLocation> padLocations = (ArrayList<PadLocation>)getIntent().getSerializableExtra(ARG_ALL_LAUNCH_PADS);
+            for(PadLocation padLocation:padLocations){
+                launchPads.addAll(padLocation.getLaunchPads());
+            }
+        }else if(getIntent().hasExtra(ARG_MANIFEST_LAUNCH_PADS)){
+            launchPads.addAll((ArrayList<LaunchPad>)getIntent().getSerializableExtra(ARG_MANIFEST_LAUNCH_PADS));
+        }
+
+        if(cameraPermission&&locationPermission){
+            setupAr();
+        }
+    }
+
+    private void setupAr(){
         CompletableFuture<ModelRenderable> andy = ModelRenderable.builder()
-                .setSource(this,R.raw.andy)
+                .setSource(this,R.raw.model)
                 .build();
         CompletableFuture.allOf(andy)
                 .handle(
                         (notUsed, throwable) ->
                         {
                             if (throwable != null) {
-                                ArUtils.displayError(this, "Unable to load renderables", throwable);
+                                DemoUtils.displayError(this, "Unable to load renderables", throwable);
                                 return null;
                             }
                             try {
                                 andyRenderable = andy.get();
 
                             } catch (InterruptedException | ExecutionException ex) {
-                                ArUtils.displayError(this, "Unable to load renderables", ex);
+                                DemoUtils.displayError(this, "Unable to load renderables", ex);
                             }
                             return null;
                         });
@@ -100,12 +138,9 @@ public class ArActivity extends AppCompatActivity{
 
                             if (locationScene == null) {
                                 locationScene = new LocationScene(this, this, arSceneView);
-                                locationScene.mLocationMarkers.add(
-                                        new LocationMarker(
-                                                locationScene.deviceLocation.currentBestLocation.getLongitude(),
-                                                locationScene.deviceLocation.currentBestLocation.getLatitude(),
-                                                getAndy()));
-
+                                for(LaunchPad launchPad: launchPads){
+                                    locationScene.mLocationMarkers.add(new LocationMarker(launchPad.getLongitude(),launchPad.getLatitude(),getAndy(launchPad.getName())));
+                                }
                             }
 
                             if (locationScene != null) {
@@ -116,10 +151,135 @@ public class ArActivity extends AppCompatActivity{
                         });
     }
 
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setTitle("NO")
+                        .setMessage("LOC")
+                        .setPositiveButton("K", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(ArActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        MY_PERMISSIONS_REQUEST_LOCATION);
+                            }
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setTitle("NO")
+                        .setMessage("LOC")
+                        .setPositiveButton("K", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(ArActivity.this,
+                                        new String[]{Manifest.permission.CAMERA},
+                                        MY_PERMISSIONS_REQUEST_CAMERA);
+                            }
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        MY_PERMISSIONS_REQUEST_CAMERA);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        setupAr();
+                    }
+
+                } else {
+                    Snackbar snack = Snackbar.make(findViewById(R.id.arFrameLayout), "Location permission is needed to run AR viewer", Snackbar.LENGTH_SHORT);
+                    snack.show();
+                    finish();
+                }
+                return;
+            }
+            case MY_PERMISSIONS_REQUEST_CAMERA:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.CAMERA)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        setupAr();
+                    }
+
+                } else {
+                    Snackbar snack = Snackbar.make(findViewById(R.id.arFrameLayout), "Camera permission is needed to run AR viewer", Snackbar.LENGTH_SHORT);
+                    snack.show();
+                    finish();
+                }
+            }
+        }
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();
-
         if (arSceneView.getSession() == null) {
             // If the session wasn't created yet, don't resume rendering.
             // This can happen if ARCore needs to be updated or permissions are not granted yet.
@@ -136,6 +296,10 @@ public class ArActivity extends AppCompatActivity{
             }
         }
 
+        if(locationScene!=null){
+            locationScene.resume();
+        }
+
         try {
             arSceneView.resume();
         } catch (CameraNotAvailableException ex) {
@@ -150,66 +314,38 @@ public class ArActivity extends AppCompatActivity{
     }
 
     @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
+        if(locationScene!=null){
+            locationScene.pause();
+        }
         arSceneView.pause();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(locationScene!=null){
+            locationScene.pause();
+            locationScene = null;
+        }
         arSceneView.destroy();
     }
 
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] results) {
-        if (!DemoUtils.hasCameraPermission(this)) {
-            if (!DemoUtils.shouldShowRequestPermissionRationale(this)) {
-                // Permission denied with checking "Do not ask again".
-                DemoUtils.launchPermissionSettings(this);
-            } else {
-                Toast.makeText(
-                        this, "Camera permission is needed to run this application", Toast.LENGTH_LONG)
-                        .show();
-            }
-            finish();
-        }
-    }
-
-//    private void ar(){
-//        if (arSceneView.getSession() == null) {
-//            // If the session wasn't created yet, don't resume rendering.
-//            // This can happen if ARCore needs to be updated or permissions are not granted yet.
-//            try {
-//                Session session = ArUtils.createArSession(this, installRequested);
-//                if (session == null) {
-//                    installRequested = ArUtils.hasCameraPermission(this);
-//                    return;
-//                } else {
-//                    arSceneView.setupSession(session);
-//                }
-//            } catch (UnavailableException e) {
-//                ArUtils.handleSessionException(this, e);
-//            }
-//        }
-//        try {
-//            arSceneView.resume();
-//        } catch (CameraNotAvailableException | SecurityException ex) {
-//            ArUtils.displayError(this, "Unable to get camera", ex);
-//            finish();
-//            return;
-//        }
-//    }
-
-    private Node getAndy() {
+    private Node getAndy(String name) {
         Node base = new Node();
         base.setParent(arSceneView.getScene());
         base.setRenderable(andyRenderable);
         Context c = this;
         base.setOnTapListener((v, event) -> {
             Toast.makeText(
-                    c, "Andy touched.", Toast.LENGTH_LONG)
+                    c, "Launch Pad: "+name, Toast.LENGTH_LONG)
                     .show();
         });
         return base;

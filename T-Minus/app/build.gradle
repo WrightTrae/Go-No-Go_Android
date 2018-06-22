@@ -16,13 +16,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
@@ -45,7 +45,8 @@ dependencies {
 
 apply plugin: 'com.google.ar.sceneform.plugin'
 
-sceneform.asset('sampledata/models/andy.obj',
+sceneform.asset('sampledata/models/Rocket/model.obj',
         'default',
-        'sampledata/models/andy.sfa',
-        'src/main/res/raw/andy')
+        'sampledata/models/Rocket/model.sfa',
+        'src/main/res/raw/model')
+

@@ -64,9 +64,11 @@ public class LaunchPadFragment extends Fragment implements GetPadsFromAPI.OnFini
         }else{
             if(getView()!=null){
                 FloatingActionButton fab = getView().findViewById(R.id.fab);
-                fab.setOnClickListener((View view)->
-                        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show());
+                fab.setOnClickListener((View view)-> {
+                    Intent intent = new Intent(getContext(), ArActivity.class);
+                    intent.putExtra(ArActivity.ARG_ALL_LAUNCH_PADS, padLocations);
+                    startActivity(intent);
+                });
 
                 (getView().findViewById(R.id.padProgressBar)).setVisibility(View.GONE);
                 ExpandableListView listView = getView().findViewById(R.id.padList);

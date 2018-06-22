@@ -26,14 +26,12 @@ import com.wright.android.t_minus.networkConnection.NetworkUtils;
 
 import java.util.ArrayList;
 
-public class MainTabbedActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener, GetManifestsFromAPI.OnFinished{
+public class MainTabbedActivity extends AppCompatActivity implements GetManifestsFromAPI.OnFinished{
 
-    private TabLayout launchesTab;
     private Toolbar toolbar;
     private LaunchPadFragment launchPadFragment;
     private ManifestFragment manifestFragment;
     private ViewPager mMainViewPager;
-    private ViewPager mLaunchViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,24 +40,12 @@ public class MainTabbedActivity extends AppCompatActivity implements TabLayout.O
 
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
-        toolbar.setLogo(R.drawable.logo_outline);
         setSupportActionBar(toolbar);
-
         mMainViewPager = findViewById(R.id.container);
         mMainViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
-
-        mLaunchViewPager = findViewById(R.id.launchesContainer);
-        mLaunchViewPager.setAdapter(new LaunchesSectionsPagerAdapter(getSupportFragmentManager()));
-
         TabLayout tabLayout = findViewById(R.id.tabs);
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mMainViewPager));
         mMainViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(this);
-
-        launchesTab = findViewById(R.id.launchesTabs);
-        mLaunchViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(launchesTab));
-        launchesTab.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mLaunchViewPager));
-
-        onTabSelected(tabLayout.getTabAt(0));
         downloadManifests();
     }
 
@@ -67,7 +53,7 @@ public class MainTabbedActivity extends AppCompatActivity implements TabLayout.O
         if(NetworkUtils.isConnected(this)){
             new GetManifestsFromAPI(this).execute();
         }else{
-            Snackbar.make(mLaunchViewPager, "No internet connection", Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(mMainViewPager, "No internet connection", Snackbar.LENGTH_INDEFINITE)
                     .setAction("Reload", (View v) -> downloadManifests()).show();
         }
     }
@@ -75,51 +61,18 @@ public class MainTabbedActivity extends AppCompatActivity implements TabLayout.O
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main_tabbed, menu);
-        toolbar.setForegroundGravity(Gravity.CENTER_HORIZONTAL);
+//        getMenuInflater().inflate(R.menu.menu_main_tabbed, menu);
+//        toolbar.setForegroundGravity(Gravity.CENTER_HORIZONTAL);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
-        mMainViewPager.setCurrentItem(tab.getPosition());
-        switch (tab.getPosition()) {
-            case 0:
-                mMainViewPager.setVisibility(View.GONE);
-                mLaunchViewPager.setVisibility(View.VISIBLE);
-                launchesTab.setVisibility(View.VISIBLE);
-                break;
-            default:
-                mMainViewPager.setVisibility(View.VISIBLE);
-                mLaunchViewPager.setVisibility(View.GONE);
-                launchesTab.setVisibility(View.GONE);
-                break;
-        }
-    }
-
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-
-    }
-
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-
     }
 
     public boolean containsName(final ArrayList<PadLocation> list, final int name){
@@ -149,32 +102,6 @@ public class MainTabbedActivity extends AppCompatActivity implements TabLayout.O
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-
-                case 1:
-
-                case 2:
-
-                default:
-                    return MainLaunchesFragment.newInstance("","");
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-    }
-
-    public class LaunchesSectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public LaunchesSectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position){
-                case 0:
                     if(manifestFragment == null){
                         manifestFragment = ManifestFragment.newInstance();
                     }
@@ -184,11 +111,12 @@ public class MainTabbedActivity extends AppCompatActivity implements TabLayout.O
                         launchPadFragment = LaunchPadFragment.newInstance();
                     }
                     return launchPadFragment;
+                case 2:
+
+                case 3:
+
                 default:
-                    if(manifestFragment == null){
-                        manifestFragment = ManifestFragment.newInstance();
-                    }
-                    return manifestFragment;
+                    return MainLaunchesFragment.newInstance("","");
             }
         }
 

@@ -2,6 +2,7 @@ package com.wright.android.t_minus.Launches.Manifest;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.wright.android.t_minus.ArActivity;
 import com.wright.android.t_minus.Objects.Manifest;
 import com.wright.android.t_minus.R;
 
@@ -24,7 +26,8 @@ public class ManifestDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_manifest_details);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.logo_outline);
+//        getSupportActionBar().setDisplayUseLogoEnabled(true);
+//        getSupportActionBar().setLogo(R.drawable.logo_outline);
         getSupportActionBar().setTitle("");
         if(getIntent().hasExtra(ARG_MANIFEST)){
             manifest = (Manifest) getIntent().getSerializableExtra(ARG_MANIFEST);
@@ -38,6 +41,17 @@ public class ManifestDetailsActivity extends AppCompatActivity {
                     .placeholder(R.drawable.logo_outline).into((ImageView)findViewById(R.id.manifestDetailsImage));
         }else {
             ((ImageView)findViewById(R.id.manifestDetailsImage)).setImageDrawable(getDrawable(R.drawable.logo_outline));
+        }
+        FloatingActionButton fab = findViewById(R.id.manifestFab);
+        if (manifest.getPadLocation().getLaunchPads()==null){
+            fab.setVisibility(View.GONE);
+        }else {
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener((View view) -> {
+                Intent intent = new Intent(this, ArActivity.class);
+                intent.putExtra(ArActivity.ARG_MANIFEST_LAUNCH_PADS, manifest.getPadLocation().getLaunchPads());
+                startActivity(intent);
+            });
         }
         ((TextView)findViewById(R.id.detailsMissionTitle)).setText(manifest.getTitle());
         ((TextView)findViewById(R.id.detailsNETTime)).setText(manifest.getTime());

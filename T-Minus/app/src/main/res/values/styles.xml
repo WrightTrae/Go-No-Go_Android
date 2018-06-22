@@ -51,7 +51,7 @@
     </style>
 
     <style name="buttonStyle.secondary">
-        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textColor">@color/primaryButton</item>
         <item name="android:background">@drawable/secondary_button</item>
     </style>
     

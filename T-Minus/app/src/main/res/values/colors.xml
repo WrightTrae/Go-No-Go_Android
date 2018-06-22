@@ -3,8 +3,8 @@
     <color name="colorPrimary">#006FBA</color>
     <color name="colorPrimaryDark">#003B77</color>
     <color name="colorAccent">#F57E1a</color>
-    <color name="primaryButton">#00BA4A</color>
-    <color name="primaryButtonPressed">#00B111</color>
+    <color name="primaryButton">#F57E1a</color>
+    <color name="primaryButtonPressed">#F57E1a</color>
     <color name="secondaryButton">#FFFFFF</color>
     <color name="transparentBack">#80000000</color>
 </resources>
