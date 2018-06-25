@@ -6,52 +6,31 @@ import java.io.Serializable;
 // JAV2 - Term Number
 // Java File Name
 public class Manifest implements Serializable {
+    private final int launchId;
     private final String title;
     private final String time;
     private final String imageUrl;
     private final PadLocation padLocation;
-    private final String status;
-    private final String probability;
-    private final String windowStart;
-    private final String windowEnd;
-    private final String missionProvider;
-    private final String url;
+    private ManifestDetails manifestDetails;
 
-    public Manifest(String title, String time, String imageUrl, PadLocation padLocation, String status, String probability, String windowStart, String windowEnd, String missionProvider, String url) {
+    public Manifest(int launchId, String title, String time, String imageUrl, PadLocation padLocation) {
+        this.launchId = launchId;
         this.title = title;
         this.time = time;
         this.imageUrl = imageUrl;
         this.padLocation = padLocation;
-        this.status = status;
-        this.probability = probability;
-        this.windowStart = windowStart;
-        this.windowEnd = windowEnd;
-        this.missionProvider = missionProvider;
-        this.url = url;
     }
 
-    public String getUrl() {
-        return url;
+    public void setManifestDetails(ManifestDetails manifestDetails) {
+        this.manifestDetails = manifestDetails;
     }
 
-    public String getStatus() {
-        return status;
+    public ManifestDetails getManifestDetails() {
+        return manifestDetails;
     }
 
-    public String getProbability() {
-        return probability;
-    }
-
-    public String getWindowStart() {
-        return windowStart;
-    }
-
-    public String getWindowEnd() {
-        return windowEnd;
-    }
-
-    public String getMissionProvider() {
-        return missionProvider;
+    public int getLaunchId() {
+        return launchId;
     }
 
     public PadLocation getPadLocation() {

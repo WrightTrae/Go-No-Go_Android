@@ -1,4 +1,4 @@
-package com.wright.android.t_minus.Launches.Manifest;
+package com.wright.android.t_minus.MainTabs.Manifest;
 
 import android.content.Context;
 import android.view.LayoutInflater;

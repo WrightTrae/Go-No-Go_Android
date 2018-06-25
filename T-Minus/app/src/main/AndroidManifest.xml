@@ -42,7 +42,7 @@
         </activity>
 
         <activity
-            android:name=".Launches.Manifest.ManifestDetailsActivity"
+            android:name=".MainTabs.Manifest.ManifestDetailsActivity"
             android:screenOrientation="portrait"/>
     </application>
 

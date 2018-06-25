@@ -49,4 +49,3 @@ sceneform.asset('sampledata/models/Rocket/model.obj',
         'default',
         'sampledata/models/Rocket/model.sfa',
         'src/main/res/raw/model')
-

@@ -50,8 +50,8 @@ public class ArActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        arSceneView = findViewById(R.id.arFrameLayout);
         setContentView(R.layout.activity_ar);
+        arSceneView = findViewById(R.id.arFrameLayout);
         if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -68,9 +68,7 @@ public class ArActivity extends AppCompatActivity{
         }else if(getIntent().hasExtra(ARG_MANIFEST_LAUNCH_PADS)){
             launchPads.addAll((ArrayList<LaunchPad>)getIntent().getSerializableExtra(ARG_MANIFEST_LAUNCH_PADS));
         }
-        boolean cameraPermission = checkCameraPermission();
-        boolean locationPermission = checkLocationPermission();
-        if(cameraPermission&&locationPermission){
+        if(checkCameraPermission()&&checkLocationPermission()){
             setupAr();
         }
     }

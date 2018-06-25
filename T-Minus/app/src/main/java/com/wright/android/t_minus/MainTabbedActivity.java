@@ -1,7 +1,9 @@
 package com.wright.android.t_minus;
 
+import android.graphics.PorterDuff;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -13,8 +15,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
-import com.wright.android.t_minus.Launches.LaunchPad.LaunchPadFragment;
-import com.wright.android.t_minus.Launches.Manifest.ManifestFragment;
+import com.wright.android.t_minus.MainTabs.LaunchPad.LaunchPadFragment;
+import com.wright.android.t_minus.MainTabs.Manifest.ManifestFragment;
+import com.wright.android.t_minus.MainTabs.Map.MapFragment;
 import com.wright.android.t_minus.Objects.Manifest;
 import com.wright.android.t_minus.Objects.PadLocation;
 import com.wright.android.t_minus.networkConnection.GetManifestsFromAPI;
@@ -22,9 +25,10 @@ import com.wright.android.t_minus.networkConnection.NetworkUtils;
 
 import java.util.ArrayList;
 
-public class MainTabbedActivity extends AppCompatActivity implements GetManifestsFromAPI.OnFinished{
+public class MainTabbedActivity extends AppCompatActivity implements GetManifestsFromAPI.OnFinished, TabLayout.OnTabSelectedListener{
     private LaunchPadFragment launchPadFragment;
     private ManifestFragment manifestFragment;
+    private MapFragment mapFragment;
     private ViewPager mMainViewPager;
 
     @Override
@@ -34,12 +38,25 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
+//        toolbar.inflateMenu(R.menu.menu_main_tabbed);
+//        toolbar.setOnMenuItemClickListener(this);
         setSupportActionBar(toolbar);
         mMainViewPager = findViewById(R.id.container);
         mMainViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
         TabLayout tabLayout = findViewById(R.id.tabs);
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mMainViewPager));
+        TabLayout.Tab originalTab = tabLayout.getTabAt(0);
+        if(originalTab != null && originalTab.getIcon() != null){
+            originalTab.getIcon().setColorFilter(getColor(R.color.selectedTabColor), PorterDuff.Mode.SRC_IN);
+        }
+        for (int i = 1;i < tabLayout.getTabCount();i++){
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            if(tab != null && tab.getIcon() != null) {
+                tab.getIcon().setColorFilter(getColor(R.color.unselectedTabColor), PorterDuff.Mode.SRC_IN);
+            }
+        }
         mMainViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(this);
+
         downloadManifests();
     }
 
@@ -85,6 +102,24 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         launchPadFragment.setData(padLocations);
     }
 
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        mMainViewPager.setCurrentItem(tab.getPosition());
+        int tabIconColor = ContextCompat.getColor(this, R.color.selectedTabColor);
+        tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+        int tabIconColor = ContextCompat.getColor(this, R.color.unselectedTabColor);
+        tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
+
 
     class SectionsPagerAdapter extends FragmentPagerAdapter {
 
@@ -106,7 +141,10 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
                     }
                     return launchPadFragment;
                 case 2:
-
+                    if(mapFragment == null){
+                        mapFragment = MapFragment.newInstance("","");
+                    }
+                    return mapFragment;
                 case 3:
 
                 default:
@@ -119,7 +157,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 }

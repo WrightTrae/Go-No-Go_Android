@@ -40,26 +40,15 @@ public class GetManifestsFromAPI extends AsyncTask<String, Void, Manifest[]> {
             JSONArray hitsJson = response.getJSONArray("launches");
             for (int i = 0; i < hitsJson.length(); i++) {
                 JSONObject obj = hitsJson.getJSONObject(i);
+                int id = obj.getInt("id");
                 String title = obj.getString("name");
                 String time = obj.getString("net");
-                String probability = obj.getString("probability");
-                String windowStart = obj.getString("windowstart");
-                String windowEnd = obj.getString("windowend");
-                int statusId = obj.getInt("status");
-                String status = parseStatus(statusId);
-                String missionProvider = obj.getJSONObject("lsp").getString("name");
                 JSONObject locationObj = obj.getJSONObject("location");
                 String location  = locationObj.getString("name");
                 int locationId  = locationObj.getInt("id");
                 String countryCode  = locationObj.getString("countryCode");
                 String imageURL = obj.getJSONObject("rocket").getString("imageURL");
-                JSONArray urlArray = obj.getJSONArray("vidURLs");
-                String url = null;
-                if(urlArray.length() != 0){
-                    url = urlArray.getString(0);
-                }
-                ManifestArrayList.add(new Manifest(title,time,imageURL, new PadLocation(locationId,location,countryCode),
-                        status, probability, windowStart, windowEnd, missionProvider, url));
+                ManifestArrayList.add(new Manifest(id,title,time,imageURL, new PadLocation(locationId,location,countryCode)));
             }
 
             return ManifestArrayList;
@@ -67,27 +56,6 @@ public class GetManifestsFromAPI extends AsyncTask<String, Void, Manifest[]> {
             e.printStackTrace();
         }
         return ManifestArrayList;
-    }
-
-    private String parseStatus(int id){
-        switch (id){
-            case 1:
-                return "Launch is GO";
-            case 2:
-                return "Launch is NO-GO";
-            case 3:
-                return "Launch was a success";
-            case 4:
-                return "Launch failed";
-            case 5:
-                return "Unplanned hold";
-            case 6:
-                return "Vehicle is in flight";
-            case 7:
-                return "There was a partial failure during launch";
-            default:
-                return "Unknown";
-        }
     }
 
     @Override
