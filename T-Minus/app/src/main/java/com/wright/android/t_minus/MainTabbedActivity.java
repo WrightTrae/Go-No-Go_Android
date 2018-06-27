@@ -1,6 +1,8 @@
 package com.wright.android.t_minus;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -14,32 +16,38 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ExpandableListView;
 
 import com.wright.android.t_minus.MainTabs.LaunchPad.LaunchPadFragment;
+import com.wright.android.t_minus.MainTabs.LaunchPad.PadAdapter;
 import com.wright.android.t_minus.MainTabs.Manifest.ManifestFragment;
-import com.wright.android.t_minus.MainTabs.Map.MapFragment;
+import com.wright.android.t_minus.MainTabs.Map.CustomMapFragment;
+import com.wright.android.t_minus.MainTabs.Map.MapFrag;
+import com.wright.android.t_minus.Objects.LaunchPad;
 import com.wright.android.t_minus.Objects.Manifest;
 import com.wright.android.t_minus.Objects.PadLocation;
 import com.wright.android.t_minus.networkConnection.GetManifestsFromAPI;
+import com.wright.android.t_minus.networkConnection.GetPadsFromAPI;
 import com.wright.android.t_minus.networkConnection.NetworkUtils;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
+import java.util.Map;
 
-public class MainTabbedActivity extends AppCompatActivity implements GetManifestsFromAPI.OnFinished, TabLayout.OnTabSelectedListener{
+public class MainTabbedActivity extends AppCompatActivity implements GetManifestsFromAPI.OnFinished, GetPadsFromAPI.OnFinished, TabLayout.OnTabSelectedListener{
     private LaunchPadFragment launchPadFragment;
     private ManifestFragment manifestFragment;
-    private MapFragment mapFragment;
+    private CustomMapFragment customMapFragment;
     private ViewPager mMainViewPager;
+    private ListIterator<PadLocation> iterator;
+    private ArrayList<PadLocation> padLocations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tabbed);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
-//        toolbar.inflateMenu(R.menu.menu_main_tabbed);
-//        toolbar.setOnMenuItemClickListener(this);
         setSupportActionBar(toolbar);
         mMainViewPager = findViewById(R.id.container);
         mMainViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
@@ -56,7 +64,9 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         }
         mMainViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(this);
-
+        manifestFragment = ManifestFragment.newInstance();
+        launchPadFragment = LaunchPadFragment.newInstance();
+        customMapFragment = CustomMapFragment.newInstance();
         downloadManifests();
     }
 
@@ -99,7 +109,29 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
                 padLocations.add(manifest.getPadLocation());
             }
         }
-        launchPadFragment.setData(padLocations);
+        this.padLocations = padLocations;
+        getLaunchPadData(padLocations);
+    }
+
+    private void getLaunchPadData(ArrayList<PadLocation> padLocations){
+
+        iterator = padLocations.listIterator();
+        if(NetworkUtils.isConnected(this)&&iterator.hasNext()){
+            new GetPadsFromAPI(this).execute(Integer.toString(iterator.next().getId()));
+        }
+    }
+
+    @Override
+    public void onFinished(ArrayList<LaunchPad> _padList) {
+        if(iterator.hasPrevious()) {
+            padLocations.get(iterator.previousIndex()).setLaunchPads(_padList);
+        }
+        if(iterator.hasNext()) {
+            new GetPadsFromAPI(this).execute(Integer.toString(iterator.next().getId()));
+        }else{
+            launchPadFragment.setData(padLocations);
+            customMapFragment.setData(padLocations);
+        }
     }
 
     @Override
@@ -141,17 +173,14 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
                     }
                     return launchPadFragment;
                 case 2:
-                    if(mapFragment == null){
-                        mapFragment = MapFragment.newInstance("","");
+                    if(customMapFragment == null){
+                        customMapFragment = CustomMapFragment.newInstance();
                     }
-                    return mapFragment;
+                    return customMapFragment;
                 case 3:
 
                 default:
-                    if(manifestFragment == null){
-                        manifestFragment = ManifestFragment.newInstance();
-                    }
-                    return manifestFragment;
+                    return null;
             }
         }
 

@@ -20,7 +20,7 @@ import com.wright.android.t_minus.networkConnection.NetworkUtils;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-public class LaunchPadFragment extends Fragment implements GetPadsFromAPI.OnFinished, ExpandableListView.OnChildClickListener {
+public class LaunchPadFragment extends Fragment implements ExpandableListView.OnChildClickListener {
 
     private ArrayList<PadLocation> padLocations;
     private ListIterator<PadLocation> iterator;
@@ -34,14 +34,22 @@ public class LaunchPadFragment extends Fragment implements GetPadsFromAPI.OnFini
     }
 
     public void setData(ArrayList<PadLocation> _padLocations){
-        if (getView() == null){
-            return;
-        }
         padLocations = _padLocations;
-        iterator = padLocations.listIterator();
-        (getView().findViewById(R.id.padProgressBar)).setVisibility(View.VISIBLE);
-        if(getContext()!=null&& NetworkUtils.isConnected(getContext())&&iterator.hasNext()){
-            new GetPadsFromAPI(this).execute(Integer.toString(iterator.next().getId()));
+        if(getView()!=null){
+            FloatingActionButton fab = getView().findViewById(R.id.fab);
+            fab.setOnClickListener((View view)-> {
+                Intent intent = new Intent(getContext(), ArActivity.class);
+                intent.putExtra(ArActivity.ARG_ALL_LAUNCH_PADS, _padLocations);
+                startActivity(intent);
+            });
+
+            (getView().findViewById(R.id.padProgressBar)).setVisibility(View.GONE);
+            ExpandableListView listView = getView().findViewById(R.id.padList);
+            listView.setOnChildClickListener(this);
+            PadAdapter padAdapter = new PadAdapter(getContext(), _padLocations);
+            listView.setAdapter(padAdapter);
+            for(int i=0; i < padAdapter.getGroupCount(); i++)
+                listView.expandGroup(i);
         }
     }
 
@@ -49,33 +57,6 @@ public class LaunchPadFragment extends Fragment implements GetPadsFromAPI.OnFini
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_pad, container, false);
-    }
-
-    @Override
-    public void onFinished(ArrayList<LaunchPad> _padList) {
-        if(iterator.hasPrevious()) {
-            padLocations.get(iterator.previousIndex()).setLaunchPads(_padList);
-        }
-        if(iterator.hasNext()) {
-            new GetPadsFromAPI(this).execute(Integer.toString(iterator.next().getId()));
-        }else{
-            if(getView()!=null){
-                FloatingActionButton fab = getView().findViewById(R.id.fab);
-                fab.setOnClickListener((View view)-> {
-                    Intent intent = new Intent(getContext(), ArActivity.class);
-                    intent.putExtra(ArActivity.ARG_ALL_LAUNCH_PADS, padLocations);
-                    startActivity(intent);
-                });
-
-                (getView().findViewById(R.id.padProgressBar)).setVisibility(View.GONE);
-                ExpandableListView listView = getView().findViewById(R.id.padList);
-                listView.setOnChildClickListener(this);
-                PadAdapter padAdapter = new PadAdapter(getContext(), padLocations);
-                listView.setAdapter(padAdapter);
-                for(int i=0; i < padAdapter.getGroupCount(); i++)
-                    listView.expandGroup(i);
-            }
-        }
     }
 
     @Override
