@@ -43,7 +43,7 @@ public class GetPadsFromAPI extends AsyncTask<String, Void, ArrayList<LaunchPad>
 //                android.location.Location location = new android.location.Location("");
 //                location.setLatitude(latitude);
 //                location.setLongitude(longitude);
-                launchPadArrayList.add(new LaunchPad(name, latitude, longitude, locationId));
+                launchPadArrayList.add(new LaunchPad(0,name, latitude, longitude, locationId));
             }
         } catch (JSONException e) {
             e.printStackTrace();

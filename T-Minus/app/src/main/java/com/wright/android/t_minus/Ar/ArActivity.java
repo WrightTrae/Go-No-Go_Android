@@ -1,8 +1,7 @@
-package com.wright.android.t_minus;
+package com.wright.android.t_minus.Ar;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -23,6 +22,7 @@ import com.google.ar.sceneform.Node;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.wright.android.t_minus.Objects.LaunchPad;
 import com.wright.android.t_minus.Objects.PadLocation;
+import com.wright.android.t_minus.R;
 
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;

@@ -10,12 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
-import com.wright.android.t_minus.ArActivity;
+import com.wright.android.t_minus.Ar.ArActivity;
 import com.wright.android.t_minus.Objects.PadLocation;
-import com.wright.android.t_minus.Objects.LaunchPad;
 import com.wright.android.t_minus.R;
-import com.wright.android.t_minus.networkConnection.GetPadsFromAPI;
-import com.wright.android.t_minus.networkConnection.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -23,7 +20,6 @@ import java.util.ListIterator;
 public class LaunchPadFragment extends Fragment implements ExpandableListView.OnChildClickListener {
 
     private ArrayList<PadLocation> padLocations;
-    private ListIterator<PadLocation> iterator;
 
     public LaunchPadFragment() {
         // Required empty public constructor

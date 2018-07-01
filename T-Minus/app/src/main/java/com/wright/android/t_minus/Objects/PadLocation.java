@@ -8,18 +8,21 @@ import java.util.ArrayList;
 // Java File Name
 public class PadLocation implements Serializable{
     private final int id;
-    private final String name;
-    private final String countryCode;
+    private String name;
     private ArrayList<LaunchPad> launchPads;
 
-    public PadLocation(int id, String name, String countryCode) {
+    public PadLocation(int id, String name, ArrayList<LaunchPad> launchPads) {
         this.id = id;
         this.name = name;
-        this.countryCode = countryCode;
+        this.launchPads = launchPads;
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {
@@ -30,11 +33,7 @@ public class PadLocation implements Serializable{
         return launchPads;
     }
 
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setLaunchPads(ArrayList<LaunchPad> launchPads) {
-        this.launchPads = launchPads;
+    public void addLaunchPads(LaunchPad launchPad) {
+        this.launchPads.add(launchPad);
     }
 }

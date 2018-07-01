@@ -13,12 +13,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.wright.android.t_minus.ArActivity;
+import com.wright.android.t_minus.Ar.ArActivity;
 import com.wright.android.t_minus.Objects.Manifest;
 import com.wright.android.t_minus.Objects.ManifestDetails;
 import com.wright.android.t_minus.R;
 import com.wright.android.t_minus.networkConnection.GetManifestsDetailsFromAPI;
-import com.wright.android.t_minus.networkConnection.GetManifestsFromAPI;
 import com.wright.android.t_minus.networkConnection.NetworkUtils;
 
 public class ManifestDetailsActivity extends AppCompatActivity implements GetManifestsDetailsFromAPI.OnFinished {
@@ -89,6 +88,10 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
         ((TextView)findViewById(R.id.detailsWindowStart)).setText(String.format(getString(R.string.window_start), manifestDetails.getWindowStart()));
         ((TextView)findViewById(R.id.detailsWindowEnd)).setText(String.format(getString(R.string.window_end), manifestDetails.getWindowEnd()));
         ((TextView)findViewById(R.id.detailsMissionProvider)).setText(String.format(getString(R.string.mission_provider), manifestDetails.getMissionProvider()));
+        if(manifest.getPadLocation().getLaunchPads() != null || manifest.getPadLocation().getLaunchPads().size() != 0) {
+            ((TextView) findViewById(R.id.detailsLaunchPad)).setText(String.format(getString(R.string.details_launch_pad),
+                    manifest.getPadLocation().getLaunchPads().get(0).getName()));
+        }
         ((TextView)findViewById(R.id.detailsDescription)).setText(manifestDetails.getDescription());
         Button liveBtn = findViewById(R.id.detailsLiveBtn);
         if(manifestDetails.getUrl()==null){

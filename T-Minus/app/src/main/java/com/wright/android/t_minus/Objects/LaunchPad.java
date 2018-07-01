@@ -6,16 +6,26 @@ import java.io.Serializable;
 // JAV2 - Term Number
 // Java File Name
 public class LaunchPad implements Serializable{
-    private final String name;
+    private final int id;
+    private String name;
     private final double latitude;
     private final double longitude;
     private final int locationId;
 
-    public LaunchPad(String name, double latitude, double longitude, int locationId) {
+    public LaunchPad(int id, String name, double latitude, double longitude, int locationId) {
+        this.id = id;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.locationId = locationId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getLocationId() {

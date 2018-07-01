@@ -5,6 +5,7 @@ package com.wright.android.t_minus.networkConnection;
 
 import android.os.AsyncTask;
 
+import com.wright.android.t_minus.Objects.LaunchPad;
 import com.wright.android.t_minus.Objects.Manifest;
 import com.wright.android.t_minus.Objects.PadLocation;
 
@@ -46,9 +47,22 @@ public class GetManifestsFromAPI extends AsyncTask<String, Void, Manifest[]> {
                 JSONObject locationObj = obj.getJSONObject("location");
                 String location  = locationObj.getString("name");
                 int locationId  = locationObj.getInt("id");
-                String countryCode  = locationObj.getString("countryCode");
                 String imageURL = obj.getJSONObject("rocket").getString("imageURL");
-                ManifestArrayList.add(new Manifest(id,title,time,imageURL, new PadLocation(locationId,location,countryCode)));
+
+                JSONArray padsArrayJSON = locationObj.getJSONArray("pads");
+                ArrayList<LaunchPad> launchPads = null;
+                for(int j = 0; j < padsArrayJSON.length(); j++){
+                    if(launchPads == null){
+                       launchPads = new ArrayList<>();
+                    }
+                    JSONObject padObj = padsArrayJSON.getJSONObject(j);
+                    int padId = padObj.getInt("id");
+                    String padName = padObj.getString("name");
+                    Double padLat = padObj.getDouble("latitude");
+                    Double padLong = padObj.getDouble("longitude");
+                    launchPads.add(new LaunchPad(padId, padName,padLat,padLong,locationId));
+                }
+                ManifestArrayList.add(new Manifest(id,title,time,imageURL, new PadLocation(locationId,location,launchPads)));
             }
 
             return ManifestArrayList;

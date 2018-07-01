@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Notifications">
+        <ListPreference
+            android:key="notif_preference"
+            android:title="Before Launch"
+            android:summary="Changes how long prior to a rocket launch you are notified."
+            android:dialogTitle="Select a time"
+            android:entries="@array/notif_list_preference"
+            android:entryValues="@array/notif_values_list_preference"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="account_settings"
+        android:title="Account Settings ">
+        <EditTextPreference
+            android:key="email_pref"
+            android:title="Email"
+            android:summary="Change your account's email"
+            android:dialogTitle="Please enter new email" />
+        <Preference
+            android:key="password_pref"
+            android:title="Reset Password"
+            android:summary="Reset your accounts current password"
+            android:dialogTitle="Reset Password"/>
+    </PreferenceCategory>
+</PreferenceScreen>
