@@ -70,7 +70,6 @@ public class LoginFragment extends Fragment {
         view.findViewById(R.id.email_sign_in_button).setOnClickListener((v)->attemptLogin());
         view.findViewById(R.id.email_sign_up_button).setOnClickListener((v)->mListener.OperationSwitch(this));
 
-        View mLoginFormView = view.findViewById(R.id.login_form);
         mProgressView = view.getRootView().findViewById(R.id.email_login_progress);
     }
 

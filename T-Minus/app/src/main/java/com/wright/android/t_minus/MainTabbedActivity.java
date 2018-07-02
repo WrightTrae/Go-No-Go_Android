@@ -1,7 +1,10 @@
 package com.wright.android.t_minus;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -28,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.wright.android.t_minus.main_tabs.launchpad.LaunchPadFragment;
 import com.wright.android.t_minus.main_tabs.manifest.ManifestFragment;
 import com.wright.android.t_minus.main_tabs.map.MapBaseFragment;
+import com.wright.android.t_minus.notifications.NotificationHelper;
 import com.wright.android.t_minus.objects.LaunchPad;
 import com.wright.android.t_minus.objects.Manifest;
 import com.wright.android.t_minus.objects.PadLocation;
@@ -38,6 +42,8 @@ import com.wright.android.t_minus.network_connection.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.wright.android.t_minus.notifications.ShowNotificationService.CHANNEL_ID;
 
 public class MainTabbedActivity extends AppCompatActivity implements GetManifestsFromAPI.OnFinished, TabLayout.OnTabSelectedListener{
     private LaunchPadFragment launchPadFragment;
@@ -53,6 +59,8 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
+
+
         mMainViewPager = findViewById(R.id.container);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mMainViewPager.setOffscreenPageLimit(2);

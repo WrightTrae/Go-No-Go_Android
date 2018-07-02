@@ -9,6 +9,7 @@
             android:summary="Changes how long prior to a rocket launch you are notified."
             android:dialogTitle="Select a time"
             android:entries="@array/notif_list_preference"
+            android:defaultValue="2"
             android:entryValues="@array/notif_values_list_preference"/>
     </PreferenceCategory>
 

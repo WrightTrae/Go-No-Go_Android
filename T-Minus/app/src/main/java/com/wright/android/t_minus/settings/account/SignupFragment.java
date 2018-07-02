@@ -78,8 +78,6 @@ public class SignupFragment extends Fragment {
 
         view.findViewById(R.id.signup_register).setOnClickListener((v)-> attemptSignIn());
         view.findViewById(R.id.signup_email_sign_in_button).setOnClickListener((v)->mListener.OperationSwitch(this));
-
-        View mLoginFormView = view.findViewById(R.id.signup_login_form);
         mProgressView = view.getRootView().findViewById(R.id.email_login_progress);
     }
 

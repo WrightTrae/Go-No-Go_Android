@@ -1,6 +1,12 @@
 package com.wright.android.t_minus.objects;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 // Trae Wright
 // JAV2 - Term Number
@@ -47,5 +53,16 @@ public class Manifest implements Serializable {
 
     public String getTime() {
         return time;
+    }
+
+    public Date getTimeDate(){
+        DateFormat df = new SimpleDateFormat("MMM dd, yyyy hh:mm a",Locale.getDefault());
+        df.setTimeZone(TimeZone.getDefault());
+        try {
+            return df.parse(time);
+        }catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

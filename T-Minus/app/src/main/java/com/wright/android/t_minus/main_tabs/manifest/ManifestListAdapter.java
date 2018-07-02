@@ -71,7 +71,7 @@ public class ManifestListAdapter extends BaseAdapter{
                 picasso.load(manifest.getImageUrl()).fit().centerCrop()
                         .placeholder(R.drawable.logo_outline).into(vh.tvImage);
             }else {
-                vh.tvImage.setImageDrawable(mContext.getDrawable(R.drawable.logo_outline));
+                vh.tvImage.setImageDrawable(mContext.getDrawable(R.drawable.rocket_default_image));
             }
         }
         return _recycleView;

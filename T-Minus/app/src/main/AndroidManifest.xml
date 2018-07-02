@@ -55,6 +55,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".settings.account.LoginActivity"/>
+
+        <service android:name=".notifications.NotifService" />
+        <service android:name=".notifications.ShowNotificationService" />
     </application>
 
 </manifest>

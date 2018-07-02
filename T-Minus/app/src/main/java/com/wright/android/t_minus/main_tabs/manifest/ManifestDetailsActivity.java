@@ -1,7 +1,10 @@
 package com.wright.android.t_minus.main_tabs.manifest;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,27 +14,41 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.wright.android.t_minus.ar.ArActivity;
+import com.wright.android.t_minus.notifications.NotificationHelper;
 import com.wright.android.t_minus.objects.Manifest;
 import com.wright.android.t_minus.objects.ManifestDetails;
 import com.wright.android.t_minus.R;
 import com.wright.android.t_minus.network_connection.GetManifestsDetailsFromAPI;
 import com.wright.android.t_minus.network_connection.NetworkUtils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
+
+import static com.wright.android.t_minus.notifications.ShowNotificationService.CHANNEL_ID;
 
 public class ManifestDetailsActivity extends AppCompatActivity implements GetManifestsDetailsFromAPI.OnFinished {
 
     public static final String ARG_MANIFEST = "ARG_MANIFEST";
     private Manifest manifest;
     private ProgressBar progressBar;
+    private NotificationHelper notificationHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manifest_details);
+
+        handleNotificationChannel();
+        notificationHelper = new NotificationHelper(this);
+        notificationHelper.setBindService();
+
         progressBar = findViewById(R.id.detailsProgressBar);
         progressBar.setVisibility(View.VISIBLE);
         if(getSupportActionBar()!=null) {
@@ -44,6 +61,23 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
         if(getIntent().hasExtra(ARG_MANIFEST)){
             manifest = (Manifest) getIntent().getSerializableExtra(ARG_MANIFEST);
             downloadDetails();
+        }
+    }
+
+    private void handleNotificationChannel() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String name = "Launch Time";
+            String description = "Go/No-Go launch notification";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel c = new NotificationChannel(CHANNEL_ID, name, importance);
+            c.setDescription(description);
+
+            NotificationManager mgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            if (mgr != null) {
+                mgr.createNotificationChannel(c);
+            }
         }
     }
 
@@ -63,7 +97,7 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
             Picasso.get().load(manifest.getImageUrl()).fit().centerCrop()
                     .placeholder(R.drawable.logo_outline).into((ImageView)findViewById(R.id.manifestDetailsImage));
         }else {
-            ((ImageView)findViewById(R.id.manifestDetailsImage)).setImageDrawable(getDrawable(R.drawable.logo_outline));
+            ((ImageView)findViewById(R.id.manifestDetailsImage)).setImageDrawable(getDrawable(R.drawable.rocket_default_image));
         }
         FloatingActionButton fab = findViewById(R.id.manifestFab);
         if (manifest.getPadLocation().getLaunchPads()==null){
@@ -95,6 +129,22 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
                     manifest.getPadLocation().getLaunchPads().get(0).getName()));
         }
         ((TextView)findViewById(R.id.detailsDescription)).setText(manifestDetails.getDescription());
+
+        Button notifBtn = findViewById(R.id.detailsNotifBtn);
+        notifBtn.setOnClickListener((View v) -> {
+            if(manifest.getTimeDate() == null){
+                return;
+            }
+            //TODO: test purposes only- set correct date later
+            Calendar cal = Calendar.getInstance();
+//            cal.setTime(manifest.getTimeDate());
+            cal.add(Calendar.SECOND , 5);
+
+            DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
+            Toast.makeText(this, dateFormat.format(cal.getTime()),Toast.LENGTH_SHORT).show();
+            notificationHelper.setAlarmForNotification(cal, manifest);
+        });
+
         Button liveBtn = findViewById(R.id.detailsLiveBtn);
         if(manifestDetails.getUrl()==null){
             liveBtn.setVisibility(View.GONE);
