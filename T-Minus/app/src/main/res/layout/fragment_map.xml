@@ -4,13 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".MainTabs.Map.CustomMapFragment">
-
-    <fragment
-        android:id="@+id/map"
-        android:name="com.wright.android.t_minus.MainTabs.Map.CustomMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    tools:context=".main_tabs.map.CustomMapFragment">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/mapFab"
@@ -22,4 +16,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:fabSize="normal"
         app:srcCompat="@drawable/ic_add_24dp" />
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.wright.android.t_minus.main_tabs.map.CustomMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>

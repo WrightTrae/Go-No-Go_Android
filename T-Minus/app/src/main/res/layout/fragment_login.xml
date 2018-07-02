@@ -9,24 +9,18 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".Settings.Account.LoginActivity">
+    android:layout_marginTop="50dp"
+    tools:context=".settings.account.LoginActivity">
 
     <!-- Login progress -->
     <ProgressBar
-        android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
-    <ScrollView
-        android:id="@+id/login_form"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
         <LinearLayout
-            android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -38,6 +32,7 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/email"
+                    style="@style/bodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_email"
@@ -53,6 +48,7 @@
 
                 <EditText
                     android:id="@+id/password"
+                    style="@style/bodyText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
@@ -71,7 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
-                android:text="sign in"
+                android:text="@string/action_sign_in_short"
                 android:textStyle="bold" />
 
             <Button
@@ -80,8 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:text="cancel"
+                android:text="@android:string/cancel"
                 android:textStyle="bold" />
         </LinearLayout>
-    </ScrollView>
 </LinearLayout>

@@ -36,7 +36,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB7nsw3Zy_anC3RtsbY4babMXeB0GaHf54" />
 
-        <activity android:name=".Ar.ArActivity" />
+        <activity android:name=".ar.ArActivity" />
         <activity
             android:name=".MainTabbedActivity"
             android:screenOrientation="portrait"
@@ -48,13 +48,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainTabs.Manifest.ManifestDetailsActivity"
+            android:name=".main_tabs.manifest.ManifestDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Settings.PreferencesActivity"
+            android:name=".settings.PreferencesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Settings.Account.LoginActivity"/>
+            android:name=".settings.account.LoginActivity"/>
     </application>
 
 </manifest>

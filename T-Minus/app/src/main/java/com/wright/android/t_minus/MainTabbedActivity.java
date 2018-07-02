@@ -3,6 +3,7 @@ package com.wright.android.t_minus;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -18,20 +19,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.wright.android.t_minus.MainTabs.LaunchPad.LaunchPadFragment;
-import com.wright.android.t_minus.MainTabs.Manifest.ManifestFragment;
-import com.wright.android.t_minus.MainTabs.Map.CustomMapFragment;
-import com.wright.android.t_minus.Objects.LaunchPad;
-import com.wright.android.t_minus.Objects.Manifest;
-import com.wright.android.t_minus.Objects.PadLocation;
-import com.wright.android.t_minus.Settings.PreferencesActivity;
-import com.wright.android.t_minus.networkConnection.GetManifestsFromAPI;
-import com.wright.android.t_minus.networkConnection.NetworkUtils;
+import com.wright.android.t_minus.main_tabs.launchpad.LaunchPadFragment;
+import com.wright.android.t_minus.main_tabs.manifest.ManifestFragment;
+import com.wright.android.t_minus.main_tabs.map.MapBaseFragment;
+import com.wright.android.t_minus.objects.LaunchPad;
+import com.wright.android.t_minus.objects.Manifest;
+import com.wright.android.t_minus.objects.PadLocation;
+import com.wright.android.t_minus.objects.ViewingLocation;
+import com.wright.android.t_minus.settings.PreferencesActivity;
+import com.wright.android.t_minus.network_connection.GetManifestsFromAPI;
+import com.wright.android.t_minus.network_connection.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +42,7 @@ import java.util.HashMap;
 public class MainTabbedActivity extends AppCompatActivity implements GetManifestsFromAPI.OnFinished, TabLayout.OnTabSelectedListener{
     private LaunchPadFragment launchPadFragment;
     private ManifestFragment manifestFragment;
-    private CustomMapFragment customMapFragment;
+    private MapBaseFragment customMapFragment;
     private ViewPager mMainViewPager;
     private DatabaseReference mDatabaseRef;
 
@@ -51,7 +54,9 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         mMainViewPager = findViewById(R.id.container);
-        mMainViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mMainViewPager.setOffscreenPageLimit(2);
+        mMainViewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabLayout = findViewById(R.id.tabs);
         TabLayout.Tab originalTab = tabLayout.getTabAt(0);
         if(originalTab != null && originalTab.getIcon() != null){
@@ -67,7 +72,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         tabLayout.addOnTabSelectedListener(this);
         manifestFragment = ManifestFragment.newInstance();
         launchPadFragment = LaunchPadFragment.newInstance();
-        customMapFragment = CustomMapFragment.newInstance();
+        customMapFragment = MapBaseFragment.newInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         downloadManifests();
     }
@@ -85,7 +90,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
     public void onFinished(Manifest[] _manifests) {
         ArrayList<PadLocation> padLocations = new ArrayList<>();
         for(Manifest manifest:_manifests){
-            if (!containsName(padLocations, manifest.getPadLocation().getId())) {
+            if (containsName(padLocations, manifest.getPadLocation().getId())) {
                 padLocations.add(manifest.getPadLocation());
             }
         }
@@ -94,7 +99,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
     }
 
     private boolean containsName(final ArrayList<PadLocation> list, final int name){
-        return list.stream().anyMatch((o -> o.getId() == (name)));
+        return list.stream().noneMatch((o -> o.getId() == (name)));
     }
 
     private void checkIfPadLocationExist(ArrayList<PadLocation> _padLocations){
@@ -114,7 +119,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
 
                 for(DataSnapshot locationSnap: dataSnapshot.getChildren()){
                     int locationId = Integer.parseInt(locationSnap.getKey());
-                    if (!containsName(_padLocations, locationId)){
+                    if (containsName(_padLocations, locationId)){
                         String name = (String) locationSnap.child("name").getValue();
                         PadLocation padLocation = new PadLocation(locationId, name, new ArrayList<>());
                         _padLocations.add(padLocation);
@@ -155,7 +160,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
                 }
                 for(DataSnapshot padSnap: dataSnapshot.getChildren()){
                     int padId = Integer.parseInt(padSnap.getKey());
-                    if (!containsName(_padLocations, padId)){
+                    if (containsName(_padLocations, padId)){
                         String name = (String) padSnap.child("name").getValue();
                         double latitude = (double) padSnap.child("latitude").getValue();
                         long locationId = (long) padSnap.child("locationId").getValue();
@@ -169,7 +174,8 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
                     }
                 }
                 launchPadFragment.setData(_padLocations);
-                customMapFragment.setData(_padLocations);
+                customMapFragment.customMapFragment.setData(_padLocations);
+                getMapData();
             }
 
             @Override
@@ -187,6 +193,39 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         padMap.put("name", launchPad.getName());
         DatabaseReference padRef = mDatabaseRef.child("launch_pads").child(String.valueOf(launchPad.getId()));
         padRef.setValue(padMap);
+    }
+
+    private void getMapData(){
+        mDatabaseRef.child("viewing_locations").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                String key = dataSnapshot.getKey();
+                customMapFragment.customMapFragment.removeViewingLocation(key);
+            }
+
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String name = (String) dataSnapshot.child("name").getValue();
+                String id = dataSnapshot.getKey();
+                double latitude = (double) dataSnapshot.child("latitude").getValue();
+                double longitude = (double) dataSnapshot.child("longitude").getValue();
+                customMapFragment.customMapFragment.addViewingLocation(new ViewingLocation(id, name, latitude,longitude));
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -233,23 +272,16 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
             super(fm);
         }
 
+
+
         @Override
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    if(manifestFragment == null){
-                        manifestFragment = ManifestFragment.newInstance();
-                    }
                     return manifestFragment;
                 case 1:
-                    if(launchPadFragment == null){
-                        launchPadFragment = LaunchPadFragment.newInstance();
-                    }
                     return launchPadFragment;
                 case 2:
-                    if(customMapFragment == null){
-                        customMapFragment = CustomMapFragment.newInstance();
-                    }
                     return customMapFragment;
                 case 3:
 
