@@ -28,7 +28,6 @@ import com.wright.android.t_minus.network_connection.NetworkUtils;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Objects;
 
 import static com.wright.android.t_minus.notifications.ShowNotificationService.CHANNEL_ID;
