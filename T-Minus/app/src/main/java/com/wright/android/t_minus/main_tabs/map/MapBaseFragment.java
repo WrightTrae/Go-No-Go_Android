@@ -76,14 +76,25 @@ public class MapBaseFragment extends Fragment {
     }
 
     private void showLocationDialog(){
+        if(getContext()==null){
+            return;
+        }
+        if(!locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            new android.support.v7.app.AlertDialog.Builder(getContext())
+                    .setTitle("Location Service Is Off")
+                    .setMessage("Location service is needed to add a new viewing location, go to setting to turn it back on.")
+                    .setPositiveButton("Okay",null)
+                    .create()
+                    .show();
+            return;
+        }
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
   if(FirebaseAuth.getInstance().getCurrentUser() != null) {
             alertDialogBuilder.setTitle("Would you like to add your location as a viewing point?");
             alertDialogBuilder
                     .setMessage("A viewing is a point on the map that has a good view of the rocket launch.")
-                    .setPositiveButton("Yes, I want to share", (DialogInterface dialog, int id) -> {
-                        addViewingLocation();
-                    })
+                    .setPositiveButton("Yes, I want to share", (DialogInterface dialog, int id) ->
+                        addViewingLocation())
                     .setNegativeButton("No, I don't", null);
         }else {
             alertDialogBuilder.setTitle("Sign In Required");
@@ -101,6 +112,9 @@ public class MapBaseFragment extends Fragment {
     private void addViewingLocation(){
         if(checkLocationPermission()) {
             Location loc = locMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(loc == null){
+                loc = locMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("viewing_locations")
                     .push();
             HashMap<String, Object> userMap = new HashMap<>();

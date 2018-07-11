@@ -1,6 +1,3 @@
-//Trae Wright
-//Java 2 - C201803
-//PreferencesActivity
 package com.wright.android.t_minus.settings;
 
 import android.content.Intent;
@@ -11,12 +8,12 @@ import com.wright.android.t_minus.R;
 
 
 public class PreferencesActivity extends AppCompatActivity {
-    private PreferancesFragment p;
+    private PreferencesFragment p;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
-        p =  PreferancesFragment.newInstance();
+        p =  PreferencesFragment.newInstance();
         p.setActivity(this);
         getFragmentManager().beginTransaction().replace(R.id.prefFrameLayout, p).commit();
 

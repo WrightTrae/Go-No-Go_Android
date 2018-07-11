@@ -1,10 +1,12 @@
 package com.wright.android.t_minus.main_tabs.map;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static com.wright.android.t_minus.main_tabs.map.MapFrag.MY_PERMISSIONS_REQUEST_LOCATION;
 
 public class CustomMapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener, LocationListener {
     public static final String TAG = "Mapfragment.TAG";
@@ -34,10 +37,6 @@ public class CustomMapFragment extends SupportMapFragment implements OnMapReadyC
     private LocationManager locMgr;
     private GoogleMap mMap;
     private MapBaseFragment parentFrag;
-
-    public static CustomMapFragment newInstance() {
-        return new CustomMapFragment();
-    }
 
     @Override
     public void onActivityCreated(Bundle bundle) {
@@ -68,27 +67,24 @@ public class CustomMapFragment extends SupportMapFragment implements OnMapReadyC
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        if(getContext()==null){
+            return;
+        }
         mMap = googleMap;
         mMap.setInfoWindowAdapter(this);
         mMap.setOnInfoWindowClickListener(this);
         mMap.getUiSettings().setMapToolbarEnabled(false);
-        if(parentFrag.checkLocationPermission()){
-            LocationSource locationSource = new LocationSource() {
-                @Override
-                public void activate(OnLocationChangedListener onLocationChangedListener) {
-
-                }
-
-                @Override
-                public void deactivate() {
-
-                }
-            };
-            locationSource.activate(this::onLocationChanged);
-            mMap.setLocationSource(locationSource);
+        if(!locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            new android.support.v7.app.AlertDialog.Builder(getContext())
+                    .setTitle("Location Service Is Off")
+                    .setMessage("Some features on the map are disabled while locations service is turned off. Go into your devices setting to re-enable location services.")
+                    .setPositiveButton("Okay", null)
+                    .create()
+                    .show();
+        }else if(parentFrag.checkLocationPermission()){
+            mMap.setLocationSource(new CurrentLocationProvider(getContext()));
             locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 100, this);
             mMap.setMyLocationEnabled(true);
-            //getMapAsync(this);
             zoomInCamera();
         }
         addMapMarkers();
@@ -96,10 +92,12 @@ public class CustomMapFragment extends SupportMapFragment implements OnMapReadyC
 
     private void zoomInCamera(){
         if(mMap == null){
-            return;
-        }
-        if(parentFrag.checkLocationPermission()) {
+        }else
+            if(parentFrag.checkLocationPermission()) {
             Location loc = locMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if(loc == null){
+                loc = locMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
             LatLng officeLocation = new LatLng(loc.getLatitude(), loc.getLongitude());
             CameraUpdate cameraMovement = CameraUpdateFactory.newLatLngZoom(officeLocation, 200);
             mMap.animateCamera(cameraMovement);

@@ -1,6 +1,9 @@
 package com.wright.android.t_minus.settings.account;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +20,7 @@ import android.widget.EditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 import com.wright.android.t_minus.R;
 
 import static com.wright.android.t_minus.main_tabs.map.CustomMapFragment.TAG;
@@ -98,7 +102,7 @@ public class LoginFragment extends Fragment {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && EmailUtils.isPasswordInvalid(password)) {
+        if (TextUtils.isEmpty(password) && EmailUtils.isPasswordInvalid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -137,30 +141,41 @@ public class LoginFragment extends Fragment {
         }
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), task -> {
             setmProgressView(false);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
             if (task.isSuccessful()) {
-                // Sign in success, update UI with the signed-in user's information
+                if (mAuth.getCurrentUser() == null){
+                    showUnexpectedError(alertDialogBuilder);
+                    return;
+                }
                 mListener.LogInButton(mAuth.getCurrentUser());
             } else {
+                if(task.getException() == null){
+                    showUnexpectedError(alertDialogBuilder);
+                }
                 try
                 {
                     throw task.getException();
                 }
-                // if user enters wrong email.
-                catch (FirebaseAuthWeakPasswordException weakPassword)
-                {
-                    Log.d(TAG, "onComplete: weak_password");
-
-                    // TODO: take your actions!
-                }
                 catch (FirebaseAuthInvalidUserException e){
-
+                    alertDialogBuilder
+                            .setTitle("Invalid User")
+                            .setMessage("The email or password entered does not match with any existing users.")
+                            .setNeutralButton("ok", null).show();
                 }
                 catch (Exception e)
                 {
-                    Log.d(TAG, "onComplete: " + e.getMessage());
+                    showUnexpectedError(alertDialogBuilder);
+                    Log.d(TAG, "onComplete ERROR: " + e.getMessage());
                 }
             }
         });
+    }
+
+    private void showUnexpectedError(AlertDialog.Builder builder){
+        builder
+                .setTitle("Unexpected Error")
+                .setMessage("An unexpected error has occurred please try again later.")
+                .setNeutralButton("ok", null).show();
     }
 
     @Override

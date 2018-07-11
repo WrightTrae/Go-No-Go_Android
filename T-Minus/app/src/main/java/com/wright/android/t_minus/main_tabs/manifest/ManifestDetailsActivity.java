@@ -69,7 +69,7 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String name = "Launch Time";
             String description = "Go/No-Go launch notification";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
 
             NotificationChannel c = new NotificationChannel(CHANNEL_ID, name, importance);
             c.setDescription(description);
@@ -166,5 +166,12 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
     public void onFinished(ManifestDetails details) {
         manifest.setManifestDetails(details);
         setUpUi();
+    }
+
+    @Override
+    protected void onStop() {
+        if(notificationHelper != null)
+            notificationHelper.unbindService();
+        super.onStop();
     }
 }

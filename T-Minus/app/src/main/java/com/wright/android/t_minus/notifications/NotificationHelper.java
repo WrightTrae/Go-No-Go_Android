@@ -13,7 +13,6 @@ import java.util.Calendar;
 public class NotificationHelper {
 
     private NotifService mBoundService;
-    public static final String SPOIL_ITEM_ARG = "SPOIL_ITEM_ARG";
     private final Context mContext;
     private boolean mIsBound;
 

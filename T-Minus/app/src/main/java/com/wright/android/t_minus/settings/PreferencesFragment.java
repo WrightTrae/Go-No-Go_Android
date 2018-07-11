@@ -1,6 +1,3 @@
-// Trae Wright
-// JAV2 - C201803
-// PreferancesFragment
 package com.wright.android.t_minus.settings;
 
 import android.app.AlertDialog;
@@ -10,18 +7,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.wright.android.t_minus.R;
 import com.wright.android.t_minus.settings.account.EmailUtils;
 import com.wright.android.t_minus.settings.account.LoginActivity;
 
-public class PreferancesFragment extends PreferenceFragment {
+public class PreferencesFragment extends PreferenceFragment {
     public static final String PREFS = "SharedPreferences.PREFS";
     public static final String NOTIF_PREF = "notif_preference";
     public static final String PASSWORD_PREF = "password_pref";
@@ -31,26 +34,25 @@ public class PreferancesFragment extends PreferenceFragment {
     private PreferencesActivity mActivity;
     private FirebaseAuth mAuth;
 
-    public PreferancesFragment() {
+    public PreferencesFragment() {
     }
 
-    public static PreferancesFragment newInstance() {
+    public static PreferencesFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        PreferancesFragment fragment = new PreferancesFragment();
+        PreferencesFragment fragment = new PreferencesFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    public void setActivity(PreferencesActivity _mactivity){
-        mActivity = _mactivity;
+    public void setActivity(PreferencesActivity _activity){
+        mActivity = _activity;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Load the preferences from an XML resource
         mAuth = FirebaseAuth.getInstance();
         addPreferencesFromResource(R.xml.preferances);
     }
@@ -68,8 +70,6 @@ public class PreferancesFragment extends PreferenceFragment {
         FirebaseUser _currentUser = mAuth.getCurrentUser();
         Preference notifPref = findPreference(NOTIF_PREF);
         Preference passwordPref = findPreference(PASSWORD_PREF);
-        Button viewBusi = getView().getRootView().findViewById(R.id.account_view_businesses);
-        Button applyBusi = getView().getRootView().findViewById(R.id.account_apply_business);
         Button signIn = getView().getRootView().findViewById(R.id.account_sign_in);
         Button signOut = getView().getRootView().findViewById(R.id.account_sign_out);
         signIn.setOnClickListener((View v)->{
@@ -82,12 +82,52 @@ public class PreferancesFragment extends PreferenceFragment {
         });
 
         Boolean userSigned = _currentUser != null;
-        notifPref.setShouldDisableView(!userSigned);
-        passwordPref.setShouldDisableView(!userSigned);
         signIn.setVisibility(userSigned ? View.GONE:View.VISIBLE);
         signOut.setVisibility(userSigned ? View.VISIBLE:View.GONE);
-        applyBusi.setVisibility(userSigned ? View.GONE:View.GONE);
-        viewBusi.setVisibility(userSigned ? View.GONE:View.GONE);
+        if(userSigned) {
+            getIfAdmin();
+        }else {
+            getView().getRootView().findViewById(R.id.account_view_businesses).setVisibility(View.GONE);
+            getView().getRootView().findViewById(R.id.account_apply_business).setVisibility(View.GONE);
+        }
+    }
+
+    private void getIfAdmin(){
+        if(mAuth.getUid() == null){
+            return;
+        }
+        FirebaseDatabase.getInstance().getReference().child("users")
+                .child(mAuth.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean isAdmin = false;
+                if(dataSnapshot.hasChild("admin")){
+                    isAdmin = (boolean) dataSnapshot.child("admin").getValue();
+                }
+                setBusinessButtons(isAdmin);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void setBusinessButtons(boolean _isAdmin){
+        if(getView() == null || mAuth == null){
+            return;
+        }
+        Button viewBusi = getView().getRootView().findViewById(R.id.account_view_businesses);
+        Button applyBusi = getView().getRootView().findViewById(R.id.account_apply_business);
+        viewBusi.setOnClickListener((View v)->{
+
+        });
+        applyBusi.setOnClickListener((View v)->{
+
+        });
+        applyBusi.setVisibility(_isAdmin ? View.GONE : View.VISIBLE);
+        viewBusi.setVisibility(_isAdmin ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -96,14 +136,16 @@ public class PreferancesFragment extends PreferenceFragment {
         Preference notifPref = findPreference(NOTIF_PREF);
         Preference emailPref = findPreference(EMAIL_PREF);
         Preference passwordPref = findPreference(PASSWORD_PREF);
-        if(emailPref!=null){
+        if(emailPref != null && passwordPref != null){
             if(mAuth.getCurrentUser() !=null){
                 emailPref.setDefaultValue(mAuth.getCurrentUser().getEmail());
+            }else{
+                PreferenceCategory accountPref = (PreferenceCategory)findPreference("account_settings");
+//                accountPref.removeAll();
+                getPreferenceScreen().removePreference(accountPref);
             }
-            emailPref.setOnPreferenceChangeListener(mPrefChanged);
-        }
-        if (passwordPref!=null){
             passwordPref.setOnPreferenceClickListener(mPrefClick);
+            emailPref.setOnPreferenceChangeListener(mPrefChanged);
         }
         if(notifPref != null){
             notifPref.setOnPreferenceChangeListener(mPrefChanged);

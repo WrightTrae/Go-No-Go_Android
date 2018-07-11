@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.wright.android.t_minus.R;
-import com.wright.android.t_minus.settings.PreferancesFragment;
+import com.wright.android.t_minus.settings.PreferencesFragment;
 
 public class LoginActivity extends AppCompatActivity implements LoginListener{
 
@@ -25,8 +25,6 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
         if(getSupportActionBar()!=null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setDisplayUseLogoEnabled(true);
-//        getSupportActionBar().setLogo(R.drawable.logo_outline);
             getSupportActionBar().setTitle("");
         }
         signupFragment = SignupFragment.newInstance();
@@ -51,14 +49,15 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
         HashMap<String, Object> userMap = new HashMap<>();
         userMap.put("name", _name);
         userMap.put("email", user.getEmail());
+        userMap.put("admin", false);
         userRef.setValue(userMap);
-        setResult(PreferancesFragment.LOG_IN_CODE);
+        setResult(PreferencesFragment.LOG_IN_CODE);
         finish();
     }
 
     @Override
     public void LogInButton(@NonNull FirebaseUser user) {
-        setResult(PreferancesFragment.LOG_IN_CODE);
+        setResult(PreferencesFragment.LOG_IN_CODE);
         finish();
     }
 }

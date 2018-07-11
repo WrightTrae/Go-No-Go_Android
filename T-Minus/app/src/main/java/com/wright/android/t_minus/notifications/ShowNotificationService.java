@@ -60,7 +60,7 @@ public class ShowNotificationService extends Service {
         b.setSmallIcon(icon);
         b.setContentTitle("Launch is Go");
         b.setContentText("A rocket is going to take off soon");
-
+        b.setPriority(NotificationManager.IMPORTANCE_HIGH);
         Intent i = new Intent(this, MainTabbedActivity.class);
         //i.putExtra(ManifestDetailsActivity.ARG_MANIFEST, manifest);
         PendingIntent pi = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
