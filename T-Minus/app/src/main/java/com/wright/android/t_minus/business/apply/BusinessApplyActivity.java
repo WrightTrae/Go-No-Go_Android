@@ -1,22 +1,17 @@
-package com.wright.android.t_minus.business;
+package com.wright.android.t_minus.business.apply;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.wright.android.t_minus.R;
-import com.wright.android.t_minus.settings.PreferencesActivity;
 
 import java.util.HashMap;
 
@@ -70,12 +65,13 @@ public class BusinessApplyActivity extends AppCompatActivity implements Business
                 addToBackStack(BUSINESS_FRAGMENT_TAG).commit();
     }
 
+
     @Override
-    public void businessInfoSubmitClick(String name, String number, String address) {
+    public void businessInfoSubmitClick(String name, String number, LatLng latLng, String address) {
         if(conformationFragment == null) {
             conformationFragment = BusinessApplyFragmentConformation.newInstance();
         }
-        saveBusiness(name, number, address);
+        saveBusiness(name, number, latLng.latitude, latLng.longitude, address);
         getSupportFragmentManager().beginTransaction().add(R.id.blankFrame, conformationFragment).
                 addToBackStack(CONFIRM_FRAGMENT_TAG).commit();
     }
@@ -96,18 +92,20 @@ public class BusinessApplyActivity extends AppCompatActivity implements Business
         userRef.updateChildren(userMap);
     }
 
-    private void saveBusiness(String name, String number, String address){
+    private void saveBusiness(String name, String number, double latitude, double longitude, String address){
         DatabaseReference businessRef = databaseReference.child("businesses").push();
 
         HashMap<String, Object> businessMap = new HashMap<>();
-        businessMap.put("isVerfied", false);
+        businessMap.put("isVerified", false);
         businessMap.put("specials", null);
 
         HashMap<String, Object> businessDetailMap = new HashMap<>();
         businessDetailMap.put("name", name);
+        businessDetailMap.put("longitude", longitude);
+        businessDetailMap.put("latitude", latitude);
         businessDetailMap.put("address", address);
         businessDetailMap.put("number", number);
-        businessDetailMap.put("description", null);
+        businessDetailMap.put("description", "Test Description");
         businessDetailMap.put("hours_of_operation", null);
         businessMap.put("details", businessDetailMap);
 

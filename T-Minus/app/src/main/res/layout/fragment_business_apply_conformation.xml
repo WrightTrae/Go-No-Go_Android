@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:clickable="true"
-    tools:context=".business.BusinessApplyFragmentUserInfo"
+    tools:context=".business.apply.BusinessApplyFragmentUserInfo"
     android:background="@android:color/white">
 
     <TextView
@@ -45,7 +45,7 @@ contact us at the email below."
         android:layout_marginTop="25dp"
         style="@style/bodyText"
         android:textColor="@android:color/black"
-        android:text="Contact Us: GoNoGoDev@gmail.com" />
+        android:text="Contact Us: gonogodevs@gmail.com" />
 
     <Button
         android:id="@+id/business_apply_conformation"

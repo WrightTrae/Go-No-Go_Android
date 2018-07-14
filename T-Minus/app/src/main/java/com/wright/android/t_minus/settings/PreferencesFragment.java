@@ -21,8 +21,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wright.android.t_minus.R;
-import com.wright.android.t_minus.business.BusinessApplyActivity;
+import com.wright.android.t_minus.business.apply.BusinessApplyActivity;
 import com.wright.android.t_minus.TextFieldUtils;
+import com.wright.android.t_minus.business.edit.BusinessEditActivity;
 import com.wright.android.t_minus.settings.account.LoginActivity;
 
 import static android.app.Activity.RESULT_OK;
@@ -128,13 +129,14 @@ public class PreferencesFragment extends PreferenceFragment {
         Button applyBusi = getView().getRootView().findViewById(R.id.account_apply_business);
 
         viewBusi.setOnClickListener((View v)->{
-
+            Intent intent = new Intent(getContext(), BusinessEditActivity.class);
+            startActivity(intent);
         });
         applyBusi.setOnClickListener((View v)->{
             if(_inProgress){
                 new AlertDialog.Builder(mActivity)
                         .setTitle("Verification In Progress")
-                        .setMessage("Your business is currently being reviewed by the Go/No-Go team. We should notify you shortly, thank you for your patience.")
+                        .setMessage("Your business is currently being reviewed by the Go/No-Go team. Thank you for your patience.")
                         .setPositiveButton("Okay", null).show();
             }else {
                 Intent intent = new Intent(getContext(), BusinessApplyActivity.class);

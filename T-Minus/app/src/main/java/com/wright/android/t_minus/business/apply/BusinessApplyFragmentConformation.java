@@ -1,4 +1,4 @@
-package com.wright.android.t_minus.business;
+package com.wright.android.t_minus.business.apply;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import com.wright.android.t_minus.R;
 

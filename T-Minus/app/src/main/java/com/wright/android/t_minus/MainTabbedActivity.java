@@ -32,6 +32,7 @@ import com.wright.android.t_minus.main_tabs.launchpad.LaunchPadFragment;
 import com.wright.android.t_minus.main_tabs.manifest.ManifestFragment;
 import com.wright.android.t_minus.main_tabs.map.MapBaseFragment;
 import com.wright.android.t_minus.notifications.NotificationHelper;
+import com.wright.android.t_minus.objects.Business;
 import com.wright.android.t_minus.objects.LaunchPad;
 import com.wright.android.t_minus.objects.Manifest;
 import com.wright.android.t_minus.objects.PadLocation;
@@ -105,6 +106,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
                 padLocations.add(manifest.getPadLocation());
             }
         }
+        getBusinessesData();
         checkIfPadLocationExist(padLocations);
         manifestFragment.setData(_manifests);
     }
@@ -220,16 +222,45 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
 
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String name = (String) dataSnapshot.child("name").getValue();
-                String id = dataSnapshot.getKey();
-                double latitude = (double) dataSnapshot.child("latitude").getValue();
-                double longitude = (double) dataSnapshot.child("longitude").getValue();
-                customMapFragment.customMapFragment.addViewingLocation(new ViewingLocation(id, name, latitude,longitude));
+                customMapFragment.customMapFragment.addViewingLocation(new ViewingLocation(
+                        dataSnapshot.getKey(),
+                        (String) dataSnapshot.child("name").getValue(),
+                        (double) dataSnapshot.child("latitude").getValue(),
+                        (double) dataSnapshot.child("longitude").getValue()));
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getBusinessesData(){
+        mDatabaseRef.child("businesses").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<Business> businessArrayList = new ArrayList<>();
+                for(DataSnapshot singleSnap: dataSnapshot.getChildren()){
+                    boolean verified = (boolean)singleSnap.child("isVerified").getValue();
+                    if (verified){
+                        DataSnapshot detailsSnap = singleSnap.child("details");
+                        businessArrayList.add(new Business(
+                                (boolean)singleSnap.child("isVerified").getValue(),
+                                (String)detailsSnap.child("name").getValue(),
+                                (String)detailsSnap.child("number").getValue(),
+                                (double)detailsSnap.child("latitude").getValue(),
+                                (double)detailsSnap.child("longitude").getValue(),
+                                (String) detailsSnap.child("address").getValue(),
+                                (String)detailsSnap.child("description").getValue()));
+                    }
+                }
+                customMapFragment.customMapFragment.setBusinessData(businessArrayList);
             }
 
             @Override

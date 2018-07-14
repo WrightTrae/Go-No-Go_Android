@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:clickable="true"
-    tools:context=".business.BusinessApplyFragmentUserInfo"
+    tools:context=".business.apply.BusinessApplyFragmentUserInfo"
     android:background="@android:color/white">
 
     <TextView

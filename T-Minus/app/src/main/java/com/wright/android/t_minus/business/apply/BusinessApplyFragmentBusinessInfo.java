@@ -1,6 +1,8 @@
-package com.wright.android.t_minus.business;
+package com.wright.android.t_minus.business.apply;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,8 +14,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.wright.android.t_minus.R;
 import com.wright.android.t_minus.TextFieldUtils;
+
+import java.io.IOException;
+import java.util.List;
 
 public class BusinessApplyFragmentBusinessInfo extends Fragment {
 
@@ -58,8 +64,7 @@ public class BusinessApplyFragmentBusinessInfo extends Fragment {
         et_business_number = view.findViewById(R.id.business_apply_business_number);
         Button b = view.findViewById(R.id.business_apply_business_submit);
         b.setOnClickListener((View v)->
-                mListener.businessInfoSubmitClick(et_business_name.getText().toString(),
-                        et_business_number.getText().toString(), et_business_address.getText().toString()));
+                checkFields());
     }
 
     private void checkFields() {
@@ -70,8 +75,8 @@ public class BusinessApplyFragmentBusinessInfo extends Fragment {
         et_business_number.setError(null);
 
         String name = et_business_name.getText().toString();
-        String number = et_business_address.getText().toString();
-        String email = et_business_number.getText().toString();
+        String address = et_business_address.getText().toString();
+        String number = et_business_number.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -83,13 +88,14 @@ public class BusinessApplyFragmentBusinessInfo extends Fragment {
             cancel = true;
         }
 
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        // Check for a valid business address.
+        LatLng businesLocation = getLocationFromAddress(getContext(), address);
+        if (TextUtils.isEmpty(address)) {
             et_business_address.setError(getString(R.string.error_field_required));
             focusView = et_business_address;
             cancel = true;
-        } else if (!TextFieldUtils.isEmailValid(email)) {
-            et_business_address.setError(getString(R.string.error_invalid_email));
+        }else if(businesLocation == null){
+            et_business_address.setError(getString(R.string.error_invalid_address));
             focusView = et_business_address;
             cancel = true;
         }
@@ -110,9 +116,33 @@ public class BusinessApplyFragmentBusinessInfo extends Fragment {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            mListener.businessInfoSubmitClick(et_business_name.getText().toString(), et_business_number.getText().toString(),
-                    et_business_address.getText().toString());
+            mListener.businessInfoSubmitClick(et_business_name.getText().toString(),
+                    et_business_number.getText().toString(),
+                    businesLocation,
+                    address);
         }
+    }
+
+    public LatLng getLocationFromAddress(Context context, String strAddress) {
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null || address.size() == 0) {
+                return null;
+            }
+
+            Address location = address.get(0);
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 
     @Override

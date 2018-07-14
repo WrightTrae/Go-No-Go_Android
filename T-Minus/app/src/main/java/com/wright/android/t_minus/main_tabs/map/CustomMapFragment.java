@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.wright.android.t_minus.objects.Business;
 import com.wright.android.t_minus.objects.LaunchPad;
 import com.wright.android.t_minus.objects.PadLocation;
 import com.wright.android.t_minus.objects.ViewingLocation;
@@ -29,9 +30,11 @@ import java.util.Objects;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-public class CustomMapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener, LocationListener {
+public class CustomMapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter,
+        GoogleMap.OnInfoWindowClickListener, LocationListener, GoogleMap.OnMarkerClickListener {
     public static final String TAG = "Mapfragment.TAG";
     private ArrayList<PadLocation> padLocations;
+    private ArrayList<Business> businesses;
     private ArrayList<ViewingLocation> viewingLocations = new ArrayList<>();
     private LocationManager locMgr;
     private GoogleMap mMap;
@@ -47,6 +50,11 @@ public class CustomMapFragment extends SupportMapFragment implements OnMapReadyC
 
     public void setData(ArrayList<PadLocation> _padLocations){
         padLocations = _padLocations;
+        addMapMarkers();
+    }
+
+    public void setBusinessData(ArrayList<Business> businessData){
+        businesses = businessData;
         addMapMarkers();
     }
 
@@ -71,6 +79,7 @@ public class CustomMapFragment extends SupportMapFragment implements OnMapReadyC
         }
         mMap = googleMap;
         mMap.setInfoWindowAdapter(this);
+        mMap.setOnMarkerClickListener(this);
         mMap.setOnInfoWindowClickListener(this);
         mMap.getUiSettings().setMapToolbarEnabled(false);
         if(!locMgr.isProviderEnabled(LocationManager.GPS_PROVIDER)){
@@ -104,20 +113,29 @@ public class CustomMapFragment extends SupportMapFragment implements OnMapReadyC
     }
 
     private void addMapMarkers(){
-        if(mMap == null||padLocations==null){
+        if(mMap == null||padLocations==null||businesses==null){
             return;
         }
-
+        MarkerOptions markerOptions;
         for(PadLocation padLocation : padLocations){
             for(LaunchPad launchPad : padLocation.getLaunchPads()) {
-                MarkerOptions markerOptions = new MarkerOptions();
-                LatLng officeLocation = new LatLng(launchPad.getLatitude(), launchPad.getLongitude());
-                markerOptions.position(officeLocation);
+                markerOptions = new MarkerOptions();
+                LatLng padLatLong = new LatLng(launchPad.getLatitude(), launchPad.getLongitude());
+                markerOptions.position(padLatLong);
                 markerOptions.title(launchPad.getName());
                 markerOptions.snippet("Pad Name: "+padLocation.getName());
                 markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                 mMap.addMarker(markerOptions);
             }
+        }
+
+        for(Business business: businesses){
+            markerOptions = new MarkerOptions();
+            LatLng businessLatLng = new LatLng(business.getLatitude(), business.getLongitude());
+            markerOptions.position(businessLatLng);
+            markerOptions.title(business.getName());
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+            mMap.addMarker(markerOptions).setTag(business);
         }
     }
 
@@ -176,5 +194,13 @@ public class CustomMapFragment extends SupportMapFragment implements OnMapReadyC
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if(marker.getTag() instanceof Business){
+
+        }
+        return false;
     }
 }
