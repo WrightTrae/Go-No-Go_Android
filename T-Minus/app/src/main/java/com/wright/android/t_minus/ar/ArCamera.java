@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import java.io.IOException;
 import java.util.List;
 
+//TODO: update entire file with camera 2 be may fine for UT if camera warping fixed
 @SuppressWarnings("deprecation")
 @TargetApi(Build.VERSION_CODES.KITKAT)
 public class ArCamera extends ViewGroup implements SurfaceHolder.Callback {

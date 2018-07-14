@@ -98,6 +98,9 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
     public void onFinished(Manifest[] _manifests) {
         ArrayList<PadLocation> padLocations = new ArrayList<>();
         for(Manifest manifest:_manifests){
+            if(manifest.getPadLocation() == null){
+                continue;
+            }
             if (containsName(padLocations, manifest.getPadLocation().getId())) {
                 padLocations.add(manifest.getPadLocation());
             }
@@ -279,9 +282,6 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         private SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
-
-
-
         @Override
         public Fragment getItem(int position) {
             switch (position){

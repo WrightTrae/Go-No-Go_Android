@@ -1,10 +1,8 @@
-// Trae Wright
-// JAV2 - C201803
-// GetManifestsFromAPI.java
 package com.wright.android.t_minus.network_connection;
 
 import android.os.AsyncTask;
 
+import com.wright.android.t_minus.main_tabs.manifest.ManifestDetailsActivity;
 import com.wright.android.t_minus.objects.LaunchPad;
 import com.wright.android.t_minus.objects.Manifest;
 import com.wright.android.t_minus.objects.PadLocation;
@@ -16,6 +14,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -41,6 +40,18 @@ public class GetManifestsFromAPI extends AsyncTask<String, Void, Manifest[]> {
 
     private ArrayList<Manifest> parseJSON(String api){
         ArrayList<Manifest> ManifestArrayList = new ArrayList<>();
+
+
+        //TODO: Test Manifest
+        SimpleDateFormat testdf = new SimpleDateFormat("MMM dd, yyyy hh:mm a",Locale.getDefault());
+        testdf.setTimeZone(TimeZone.getDefault());
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, 1);
+        String testFormattedDate = testdf.format(calendar.getTime());
+        ManifestArrayList.add(new Manifest(ManifestDetailsActivity.testLaunchID, "Test Launch", testFormattedDate,
+                "https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png", null));
+
+
         try {
             JSONObject response = new JSONObject(api);
             JSONArray hitsJson = response.getJSONArray("launches");
@@ -78,7 +89,6 @@ public class GetManifestsFromAPI extends AsyncTask<String, Void, Manifest[]> {
                 }
                 ManifestArrayList.add(new Manifest(id,title,formattedDate,imageURL, new PadLocation(locationId,location,launchPads)));
             }
-
             return ManifestArrayList;
         } catch (JSONException | ParseException e) {
             e.printStackTrace();

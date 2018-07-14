@@ -143,12 +143,13 @@ public class MapBaseFragment extends Fragment {
                 new android.support.v7.app.AlertDialog.Builder(getContext())
                         .setTitle("Location Permission Needed")
                         .setMessage("Please allow location permission for feature")
-                        .setPositiveButton("Okay", (dialogInterface, i) -> {
+                        .setPositiveButton("Allow", (dialogInterface, i) -> {
                             //Prompt the user once explanation has been shown
                             ActivityCompat.requestPermissions(getActivity(),
                                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                     MY_PERMISSIONS_REQUEST_LOCATION);
                         })
+                        .setNegativeButton("Don't Allow", null)
                         .create()
                         .show();
 

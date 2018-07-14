@@ -7,6 +7,7 @@
     <color name="primaryButtonPressed">#F57E1a</color>
     <color name="secondaryButton">#FFFFFF</color>
     <color name="transparentBack">#70000000</color>
+    <color name="transparentRed">#90BD1204</color>
     <color name="transparentGreen">#7000BA4A</color>
     <color name="selectedTabColor">#FFFFFF</color>
     <color name="unselectedTabColor">#808080</color>

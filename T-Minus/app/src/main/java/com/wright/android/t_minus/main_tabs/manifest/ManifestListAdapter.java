@@ -1,6 +1,7 @@
 package com.wright.android.t_minus.main_tabs.manifest;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,9 +63,20 @@ public class ManifestListAdapter extends BaseAdapter{
         }
         Manifest manifest = (Manifest) getItem(_position);
         if(manifest!=null){
+            //TODO:TEST
+            if(manifest.getLaunchId() == ManifestDetailsActivity.testLaunchID){
+                vh.tvLaunchAlert.setVisibility(View.VISIBLE);
+            }else{
+                vh.tvLaunchAlert.setVisibility(View.GONE);
+            }
+
             vh.tvTitle.setText(manifest.getTitle());
             vh.tvTime.setText(manifest.getTime());
-            vh.tvLocation.setText(manifest.getPadLocation().getName());
+            if(manifest.getPadLocation() == null){
+                vh.tvLocation.setText(R.string.unknown_location);
+            }else {
+                vh.tvLocation.setText(manifest.getPadLocation().getName());
+            }
             if(!manifest.getImageUrl().equals("https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png")){
                 Picasso picasso = Picasso.get();
 //                picasso.setIndicatorsEnabled(true);
@@ -79,6 +91,7 @@ public class ManifestListAdapter extends BaseAdapter{
 
     // Optimize with view holder!
     static class ViewHolder{
+        final TextView tvLaunchAlert;
         final TextView tvTitle;
         final TextView tvTime;
         final TextView tvLocation;
@@ -89,6 +102,7 @@ public class ManifestListAdapter extends BaseAdapter{
             tvTime = _layout.findViewById(R.id.detailsNETTime);
             tvLocation = _layout.findViewById(R.id.detailsLocation);
             tvImage = _layout.findViewById(R.id.cellImage);
+            tvLaunchAlert = _layout.findViewById(R.id.cellActiveLaunchText);
         }
     }
 }

@@ -1,9 +1,7 @@
 package com.wright.android.t_minus.settings.account;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,8 +17,7 @@ import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.google.firebase.auth.FirebaseUser;
+import com.wright.android.t_minus.TextFieldUtils;
 import com.wright.android.t_minus.R;
 
 import static com.wright.android.t_minus.main_tabs.map.CustomMapFragment.TAG;
@@ -102,7 +99,7 @@ public class LoginFragment extends Fragment {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (TextUtils.isEmpty(password) && EmailUtils.isPasswordInvalid(password)) {
+        if (TextUtils.isEmpty(password) && TextFieldUtils.isPasswordInvalid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -113,7 +110,7 @@ public class LoginFragment extends Fragment {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!EmailUtils.isEmailValid(email)) {
+        } else if (!TextFieldUtils.isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;

@@ -28,6 +28,7 @@ import com.wright.android.t_minus.network_connection.NetworkUtils;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 import static com.wright.android.t_minus.notifications.ShowNotificationService.CHANNEL_ID;
@@ -38,6 +39,7 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
     private Manifest manifest;
     private ProgressBar progressBar;
     private NotificationHelper notificationHelper;
+    public static final int testLaunchID = 0x1101;//TODO: THIS IS FOR TESTING ONLY
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +55,23 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
         if(getSupportActionBar()!=null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setDisplayUseLogoEnabled(true);
-//        getSupportActionBar().setLogo(R.drawable.logo_outline);
             getSupportActionBar().setTitle("");
         }
         if(getIntent().hasExtra(ARG_MANIFEST)){
             manifest = (Manifest) getIntent().getSerializableExtra(ARG_MANIFEST);
-            downloadDetails();
+            if(manifest.getLaunchId() == testLaunchID){
+                setTestDetails();
+            }else {
+                downloadDetails();
+            }
         }
+    }
+
+    private void setTestDetails(){
+        manifest.setManifestDetails(new ManifestDetails("1", "Launch is GO",
+                "Test start time","Test end time","Go/No-Go",null,"TEST LAUNCH",
+                "This is a test launch created for user testing to display notifications and live launch view example."));
+        setUpUi();
     }
 
     private void handleNotificationChannel() {
@@ -99,9 +110,11 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
             ((ImageView)findViewById(R.id.manifestDetailsImage)).setImageDrawable(getDrawable(R.drawable.rocket_default_image));
         }
         FloatingActionButton fab = findViewById(R.id.manifestFab);
-        if (manifest.getPadLocation().getLaunchPads()==null){
+        if (manifest.getPadLocation() == null || manifest.getPadLocation().getLaunchPads()==null){
             fab.setVisibility(View.GONE);
+            ((TextView)findViewById(R.id.detailsLocation)).setText(getString(R.string.unknown_location));
         }else {
+            ((TextView)findViewById(R.id.detailsLocation)).setText(manifest.getPadLocation().getName());
             fab.setVisibility(View.VISIBLE);
             fab.setOnClickListener((View view) -> {
                 Intent intent = new Intent(this, ArActivity.class);
@@ -111,7 +124,6 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
         }
         ((TextView)findViewById(R.id.detailsMissionTitle)).setText(manifest.getTitle());
         ((TextView)findViewById(R.id.detailsNETTime)).setText(manifest.getTime());
-        ((TextView)findViewById(R.id.detailsLocation)).setText(manifest.getPadLocation().getName());
 
         final ManifestDetails manifestDetails = manifest.getManifestDetails();
         ((TextView)findViewById(R.id.detailsMissionStatus)).setText(manifestDetails.getStatus());
@@ -123,7 +135,7 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
         ((TextView)findViewById(R.id.detailsWindowStart)).setText(String.format(getString(R.string.window_start), manifestDetails.getWindowStart()));
         ((TextView)findViewById(R.id.detailsWindowEnd)).setText(String.format(getString(R.string.window_end), manifestDetails.getWindowEnd()));
         ((TextView)findViewById(R.id.detailsMissionProvider)).setText(String.format(getString(R.string.mission_provider), manifestDetails.getMissionProvider()));
-        if(manifest.getPadLocation().getLaunchPads() != null || manifest.getPadLocation().getLaunchPads().size() != 0) {
+        if(manifest.getPadLocation() != null && manifest.getPadLocation().getLaunchPads() != null && manifest.getPadLocation().getLaunchPads().size() != 0) {
             ((TextView) findViewById(R.id.detailsLaunchPad)).setText(String.format(getString(R.string.details_launch_pad),
                     manifest.getPadLocation().getLaunchPads().get(0).getName()));
         }

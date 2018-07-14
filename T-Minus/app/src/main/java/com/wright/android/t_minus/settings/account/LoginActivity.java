@@ -17,7 +17,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
 
     private LoginFragment loginFragment;
     private SignupFragment signupFragment;
-
+//TODO: Add toast messages for signing in/out successfully
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +29,12 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
         }
         signupFragment = SignupFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(R.id.login_frame, signupFragment).commit();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     @Override
@@ -50,14 +56,15 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
         userMap.put("name", _name);
         userMap.put("email", user.getEmail());
         userMap.put("admin", false);
+        userMap.put("admin_in_progress", false);
         userRef.setValue(userMap);
-        setResult(PreferencesFragment.LOG_IN_CODE);
+        setResult(RESULT_OK);
         finish();
     }
 
     @Override
     public void LogInButton(@NonNull FirebaseUser user) {
-        setResult(PreferencesFragment.LOG_IN_CODE);
+        setResult(RESULT_OK);
         finish();
     }
 }

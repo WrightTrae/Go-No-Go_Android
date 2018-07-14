@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static android.content.Context.LOCATION_SERVICE;
-import static com.wright.android.t_minus.main_tabs.map.MapFrag.MY_PERMISSIONS_REQUEST_LOCATION;
 
 public class CustomMapFragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.InfoWindowAdapter, GoogleMap.OnInfoWindowClickListener, LocationListener {
     public static final String TAG = "Mapfragment.TAG";

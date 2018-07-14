@@ -13,7 +13,11 @@ import android.location.LocationManager;
 import android.opengl.Matrix;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -57,8 +61,13 @@ public class ArActivity extends AppCompatActivity implements SensorEventListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ar_test);
+        setContentView(R.layout.activity_ar);
         ArrayList<LaunchPad> launchPads = new ArrayList<>();
+        if(getSupportActionBar()!=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setTitle("");
+        }
         if(getIntent().hasExtra(ARG_LAUNCH_PAD)){
             launchPads.add((LaunchPad) getIntent().getSerializableExtra(ARG_LAUNCH_PAD));
         }else if(getIntent().hasExtra(ARG_ALL_LAUNCH_PADS)){
@@ -79,6 +88,17 @@ public class ArActivity extends AppCompatActivity implements SensorEventListener
         arOverlayView = new ArOverlayView(this, getArPointsFromPads(launchPads));
     }
 
+    private void setUpSensorAndOverlay(){
+        registerSensors();
+        initAROverlayView();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
     private ArrayList<ArPoint> getArPointsFromPads(ArrayList<LaunchPad> launchPads){
         ArrayList<ArPoint> arPoints = new ArrayList<>();
         for(LaunchPad pad: launchPads){
@@ -90,34 +110,17 @@ public class ArActivity extends AppCompatActivity implements SensorEventListener
     @Override
     public void onResume() {
         super.onResume();
-        requestLocationPermission();
-        requestCameraPermission();
-        registerSensors();
-        initAROverlayView();
+        if(checkCameraPermission()&&checkLocationPermission()) {
+            initARCameraView();
+            initLocationService();
+        }
+        setUpSensorAndOverlay();
     }
 
     @Override
     public void onPause() {
         releaseCamera();
         super.onPause();
-    }
-
-    public void requestCameraPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                this.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            this.requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSIONS_CODE);
-        } else {
-            initARCameraView();
-        }
-    }
-
-    public void requestLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                this.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSIONS_CODE);
-        } else {
-            initLocationService();
-        }
     }
 
     public void initAROverlayView() {
@@ -277,4 +280,122 @@ public class ArActivity extends AppCompatActivity implements SensorEventListener
     public void onProviderDisabled(String s) {
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        locationManager.removeUpdates(this);
+    }
+
+    private boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setTitle("Location Permission Needed")
+                        .setMessage("Please allow location permission for AR viewer")
+                        .setPositiveButton("Okay", (dialogInterface, i) -> {
+                            //Prompt the user once explanation has been shown
+                            ActivityCompat.requestPermissions(ArActivity.this,
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    REQUEST_LOCATION_PERMISSIONS_CODE);
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_LOCATION_PERMISSIONS_CODE);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private boolean checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                new AlertDialog.Builder(this)
+                        .setTitle("Camera Permission Needed")
+                        .setMessage("Please allow camera permission for AR viewer")
+                        .setPositiveButton("Okay", (dialogInterface, i) -> {
+                            //Prompt the user once explanation has been shown
+                            ActivityCompat.requestPermissions(ArActivity.this,
+                                    new String[]{Manifest.permission.CAMERA},
+                                    REQUEST_CAMERA_PERMISSIONS_CODE);
+                        })
+                        .create()
+                        .show();
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA},
+                        REQUEST_CAMERA_PERMISSIONS_CODE);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSIONS_CODE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        initLocationService();
+                    }
+
+                } else {
+                    Snackbar snack = Snackbar.make(findViewById(R.id.activity_ar), "Location permission is needed to run AR viewer", Snackbar.LENGTH_SHORT);
+                    snack.show();
+                    finish();
+                }
+                return;
+            }
+            case REQUEST_CAMERA_PERMISSIONS_CODE:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.CAMERA)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        initARCameraView();
+                    }
+
+                } else {
+                    Snackbar snack = Snackbar.make(findViewById(R.id.activity_ar), "Camera permission is needed to run AR viewer", Snackbar.LENGTH_SHORT);
+                    snack.show();
+                    finish();
+                }
+            }
+        }
+    }
+
 }

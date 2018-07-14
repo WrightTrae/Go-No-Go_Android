@@ -21,8 +21,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.wright.android.t_minus.R;
-import com.wright.android.t_minus.settings.account.EmailUtils;
+import com.wright.android.t_minus.business.BusinessApplyActivity;
+import com.wright.android.t_minus.TextFieldUtils;
 import com.wright.android.t_minus.settings.account.LoginActivity;
+
+import static android.app.Activity.RESULT_OK;
 
 public class PreferencesFragment extends PreferenceFragment {
     public static final String PREFS = "SharedPreferences.PREFS";
@@ -30,6 +33,7 @@ public class PreferencesFragment extends PreferenceFragment {
     public static final String PASSWORD_PREF = "password_pref";
     public static final String EMAIL_PREF = "email_pref";
     public static final int LOG_IN_CODE = 0x0010;
+    public static final int APPLY_BUSINESS_CODE = 0x0100;
     private String dateFormat;
     private PreferencesActivity mActivity;
     private FirebaseAuth mAuth;
@@ -68,8 +72,6 @@ public class PreferencesFragment extends PreferenceFragment {
             return;
         }
         FirebaseUser _currentUser = mAuth.getCurrentUser();
-        Preference notifPref = findPreference(NOTIF_PREF);
-        Preference passwordPref = findPreference(PASSWORD_PREF);
         Button signIn = getView().getRootView().findViewById(R.id.account_sign_in);
         Button signOut = getView().getRootView().findViewById(R.id.account_sign_out);
         signIn.setOnClickListener((View v)->{
@@ -101,10 +103,14 @@ public class PreferencesFragment extends PreferenceFragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 boolean isAdmin = false;
+                boolean inProgress = false;
                 if(dataSnapshot.hasChild("admin")){
                     isAdmin = (boolean) dataSnapshot.child("admin").getValue();
                 }
-                setBusinessButtons(isAdmin);
+                if(!isAdmin && dataSnapshot.hasChild("admin_in_progress")){
+                    inProgress = (boolean) dataSnapshot.child("admin_in_progress").getValue();
+                }
+                setBusinessButtons(isAdmin, inProgress);
             }
 
             @Override
@@ -114,20 +120,29 @@ public class PreferencesFragment extends PreferenceFragment {
         });
     }
 
-    private void setBusinessButtons(boolean _isAdmin){
+    private void setBusinessButtons(boolean _isAdmin, boolean _inProgress){
         if(getView() == null || mAuth == null){
             return;
         }
         Button viewBusi = getView().getRootView().findViewById(R.id.account_view_businesses);
         Button applyBusi = getView().getRootView().findViewById(R.id.account_apply_business);
+
         viewBusi.setOnClickListener((View v)->{
 
         });
         applyBusi.setOnClickListener((View v)->{
-
+            if(_inProgress){
+                new AlertDialog.Builder(mActivity)
+                        .setTitle("Verification In Progress")
+                        .setMessage("Your business is currently being reviewed by the Go/No-Go team. We should notify you shortly, thank you for your patience.")
+                        .setPositiveButton("Okay", null).show();
+            }else {
+                Intent intent = new Intent(getContext(), BusinessApplyActivity.class);
+                startActivityForResult(intent, APPLY_BUSINESS_CODE);
+            }
         });
         applyBusi.setVisibility(_isAdmin ? View.GONE : View.VISIBLE);
-        viewBusi.setVisibility(_isAdmin ? View.VISIBLE : View.GONE);
+        viewBusi.setVisibility(_isAdmin&&!_inProgress ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -138,7 +153,8 @@ public class PreferencesFragment extends PreferenceFragment {
         Preference passwordPref = findPreference(PASSWORD_PREF);
         if(emailPref != null && passwordPref != null){
             if(mAuth.getCurrentUser() !=null){
-                emailPref.setDefaultValue(mAuth.getCurrentUser().getEmail());
+                String email = mAuth.getCurrentUser().getEmail();
+                emailPref.setDefaultValue(email);
             }else{
                 PreferenceCategory accountPref = (PreferenceCategory)findPreference("account_settings");
 //                accountPref.removeAll();
@@ -183,7 +199,7 @@ public class PreferencesFragment extends PreferenceFragment {
                 case EMAIL_PREF:
                     String email = (String) newValue;
                     if(mAuth.getCurrentUser()!=null){
-                        if(EmailUtils.isEmailValid(email)) {
+                        if(TextFieldUtils.isEmailValid(email)) {
                             mAuth.getCurrentUser().updateEmail(email);
                             Toast.makeText(getContext(), "Email successfully changed.", Toast.LENGTH_SHORT).show();
                         }else {
@@ -210,10 +226,8 @@ public class PreferencesFragment extends PreferenceFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
-            case LOG_IN_CODE:
-                updateButtons();
-                break;
+        if(resultCode == RESULT_OK){
+            updateButtons();
         }
     }
 }

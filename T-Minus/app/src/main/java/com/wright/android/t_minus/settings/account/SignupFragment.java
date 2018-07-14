@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.wright.android.t_minus.TextFieldUtils;
 import com.wright.android.t_minus.R;
 
 import java.util.Objects;
@@ -28,7 +29,7 @@ import java.util.Objects;
 import static com.wright.android.t_minus.main_tabs.map.CustomMapFragment.TAG;
 
 public class SignupFragment extends Fragment {
-
+//TODO: Add error handling for wrong information
     private LoginListener mListener;
     private FirebaseAuth mAuth;
     private EditText mNameView;
@@ -108,7 +109,7 @@ public class SignupFragment extends Fragment {
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && EmailUtils.isPasswordInvalid(password)) {
+        if (!TextUtils.isEmpty(password) && TextFieldUtils.isPasswordInvalid(password)) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -125,7 +126,7 @@ public class SignupFragment extends Fragment {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!EmailUtils.isEmailValid(email)) {
+        } else if (!TextFieldUtils.isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
