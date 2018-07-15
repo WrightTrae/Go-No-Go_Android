@@ -70,7 +70,7 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
     }
 
     private void setTestDetails(){
-        manifest.setManifestDetails(new ManifestDetails("1", "Launch is GO",
+        manifest.setManifestDetails(new ManifestDetails("Launch is GO", "Unknown",
                 "Test start time","Test end time","Go/No-Go",null,"TEST LAUNCH",
                 "This is a test launch created for user testing to display notifications and live launch view example."));
         setUpUi();
@@ -97,10 +97,8 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
         if(NetworkUtils.isConnected(this)){
             new GetManifestsDetailsFromAPI(this).execute(String.valueOf(manifest.getLaunchId()));
         }else{
-            if(this.hasWindowFocus()) {
-                Snackbar.make(Objects.requireNonNull(this.getCurrentFocus()), "No internet connection", Snackbar.LENGTH_INDEFINITE)
-                        .setAction("Reload", (View v) -> downloadDetails()).show();
-            }
+            Snackbar.make(findViewById(R.id.scrollView2), "No internet connection", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Reload", (View v) -> downloadDetails()).show();
         }
     }
 

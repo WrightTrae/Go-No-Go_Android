@@ -35,6 +35,9 @@
     <string name="sign_out">Sign out</string>
     <string name="sign_in">Sign In</string>
 
+    <string name="business_number">Phone Number: %1$s</string>
+    <string name="business_address">Address: %1$s</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

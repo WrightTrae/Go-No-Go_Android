@@ -71,8 +71,8 @@ public class BusinessViewFragment extends Fragment {
         getFieldsFromView(view);
         name.setText(business.getName());
         description.setText(business.getDescription());
-        phone.setText(business.getNumber());
-        address.setText(business.getAddress());
+        phone.setText(String.format(getString(R.string.business_number), business.getNumber()));
+        address.setText(String.format(getString(R.string.business_address), business.getAddress()));
     }
 
     private void getFieldsFromView(@NonNull View view){

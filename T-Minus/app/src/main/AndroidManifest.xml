@@ -28,6 +28,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB7nsw3Zy_anC3RtsbY4babMXeB0GaHf54" />
 
+        <service android:name=".notifications.NotifService" />
+        <service android:name=".notifications.ShowNotificationService" />
+
         <activity
             android:name=".MainTabbedActivity"
             android:screenOrientation="portrait"
@@ -52,11 +55,11 @@
             android:name=".business.apply.BusinessApplyActivity"
             android:screenOrientation="portrait" />
 
-        <service android:name=".notifications.NotifService" />
-        <service android:name=".notifications.ShowNotificationService" />
+        <activity android:name=".business.edit.BusinessEditActivity"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".business.edit.BusinessEditActivity" />
-        <activity android:name=".business.view.BusinessViewActivity"></activity>
+        <activity android:name=".business.view.BusinessViewActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

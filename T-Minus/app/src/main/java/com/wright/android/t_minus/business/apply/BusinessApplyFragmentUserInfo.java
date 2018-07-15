@@ -106,8 +106,8 @@ public class BusinessApplyFragmentUserInfo extends Fragment {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            mListener.userInfoNextClick(et_user_name.getText().toString(), et_user_email.getText().toString(),
-                    et_user_number.getText().toString());
+            mListener.userInfoNextClick(et_user_name.getText().toString(),
+                    et_user_number.getText().toString(), et_user_email.getText().toString());
         }
     }
 

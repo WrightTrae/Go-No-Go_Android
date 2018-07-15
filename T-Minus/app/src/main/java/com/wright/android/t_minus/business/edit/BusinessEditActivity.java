@@ -42,7 +42,6 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
                 for(DataSnapshot singleSnap: dataSnapshot.getChildren()){
                     boolean verified = (boolean)singleSnap.child("isVerified").getValue();
                     if (verified){
-
                         DataSnapshot detailsSnap = singleSnap.child("details");
                         businesses.add(new Business(
                                 (boolean)singleSnap.child("isVerified").getValue(),
@@ -54,8 +53,7 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
                                 (String)detailsSnap.child("description").getValue()));
                     }
                 }
-                businessListFragment = BusinessListFragment.newInstance(businesses);
-                getSupportFragmentManager().beginTransaction().add(R.id.blankFrame, businessListFragment).commit();
+                onBusinessDataFinish(businesses);
             }
 
             @Override
@@ -63,6 +61,13 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
 
             }
         });
+    }
+
+    private void onBusinessDataFinish(ArrayList<Business> businesses){
+        if(!this.isDestroyed()) {
+            businessListFragment = BusinessListFragment.newInstance(businesses);
+            getSupportFragmentManager().beginTransaction().add(R.id.blankFrame, businessListFragment).commit();
+        }
     }
 
     @Override

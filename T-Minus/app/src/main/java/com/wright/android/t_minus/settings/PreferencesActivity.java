@@ -21,7 +21,6 @@ public class PreferencesActivity extends AppCompatActivity {
         p =  PreferencesFragment.newInstance();
         p.setActivity(this);
         getFragmentManager().beginTransaction().replace(R.id.prefFrameLayout, p).commit();
-
     }
 
     @Override

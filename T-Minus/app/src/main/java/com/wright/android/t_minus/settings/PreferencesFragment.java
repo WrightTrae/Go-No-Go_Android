@@ -10,6 +10,7 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -24,6 +25,8 @@ import com.wright.android.t_minus.R;
 import com.wright.android.t_minus.business.apply.BusinessApplyActivity;
 import com.wright.android.t_minus.TextFieldUtils;
 import com.wright.android.t_minus.business.edit.BusinessEditActivity;
+import com.wright.android.t_minus.network_connection.GetManifestsDetailsFromAPI;
+import com.wright.android.t_minus.network_connection.NetworkUtils;
 import com.wright.android.t_minus.settings.account.LoginActivity;
 
 import static android.app.Activity.RESULT_OK;
@@ -43,9 +46,7 @@ public class PreferencesFragment extends PreferenceFragment {
     }
 
     public static PreferencesFragment newInstance() {
-
         Bundle args = new Bundle();
-
         PreferencesFragment fragment = new PreferencesFragment();
         fragment.setArguments(args);
         return fragment;
@@ -65,7 +66,16 @@ public class PreferencesFragment extends PreferenceFragment {
     @Override
     public void onStart() {
         super.onStart();
-        updateButtons();
+        if(NetworkUtils.isConnected(getContext())){
+            getPreferenceScreen().setEnabled(true);
+            updateButtons();
+        }else{
+            if(getView() != null) {
+                getPreferenceScreen().setEnabled(false);
+                Snackbar.make(getView(), "No internet connection", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Reload", (View v) -> onStart()).show();
+            }
+        }
     }
 
     private void updateButtons(){
