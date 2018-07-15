@@ -251,16 +251,10 @@ public class ArActivity extends AppCompatActivity implements SensorEventListener
     private void updateLatestLocation() {
         if (arOverlayView !=null && location != null) {
             arOverlayView.updateCurrentLocation(location);
-            Log.d(TAG, String.format("Changed lat: %s lon: %s altitude: %s \n",
-                    location.getLatitude(), location.getLongitude(), location.getAltitude()));
-            tvCurrentLocation.setText(String.format("lat: %s \nlon: %s \naltitude: %s \n",
-                    location.getLatitude(), location.getLongitude(), location.getAltitude()));
         }
     }
 
     public void onLocationChanged(Location location) {
-        Toast.makeText(this, String.format("Changed lat: %s lon: %s altitude: %s \n",
-                location.getLatitude(), location.getLongitude(), location.getAltitude()), Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Location Changed");
         this.location = location;
         updateLatestLocation();

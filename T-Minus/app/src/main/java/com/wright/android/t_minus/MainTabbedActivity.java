@@ -251,6 +251,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
                     if (verified){
                         DataSnapshot detailsSnap = singleSnap.child("details");
                         businessArrayList.add(new Business(
+                                singleSnap.getKey(),
                                 (boolean)singleSnap.child("isVerified").getValue(),
                                 (String)detailsSnap.child("name").getValue(),
                                 (String)detailsSnap.child("number").getValue(),

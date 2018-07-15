@@ -99,6 +99,7 @@ public class EditBusinessFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
         if (getArguments() != null) {
             business = (Business) getArguments().getSerializable(ARG_BUSINESS);
         }

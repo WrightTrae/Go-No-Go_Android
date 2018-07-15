@@ -20,6 +20,7 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
     private Business selectedBusiness;
     private EditBusinessFragment editBusinessFragment;
     private BusinessListFragment businessListFragment;
+    DatabaseReference mBuisnessesDatabaseRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +31,12 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setTitle("");
         }
+        mBuisnessesDatabaseRef = FirebaseDatabase.getInstance().getReference().child("businesses");
         getBusinessesData();
     }
 
     private void getBusinessesData(){
-        DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference();
-        mDatabaseRef.child("businesses").addListenerForSingleValueEvent(new ValueEventListener() {
+        mBuisnessesDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 businesses = new ArrayList<>();
@@ -44,6 +45,7 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
                     if (verified){
                         DataSnapshot detailsSnap = singleSnap.child("details");
                         businesses.add(new Business(
+                                singleSnap.getKey(),
                                 (boolean)singleSnap.child("isVerified").getValue(),
                                 (String)detailsSnap.child("name").getValue(),
                                 (String)detailsSnap.child("number").getValue(),
@@ -74,15 +76,16 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
     public boolean onSupportNavigateUp() {
         if(editBusinessFragment != null && selectedBusiness != null) {
             if (editBusinessFragment.checkFields()) {
+                Business updatedBusiness = editBusinessFragment.getNewData();
                 int index = businesses.indexOf(selectedBusiness);
                 businesses.remove(index);
-                businesses.add(index, editBusinessFragment.getNewData());
-                businessListFragment.notifyListView(editBusinessFragment.getNewData(), index);
+                businesses.add(index, updatedBusiness);
+                businessListFragment.notifyListView(updatedBusiness, index);
+                updateBusiness(updatedBusiness);
             } else {
                 return false;
             }
         }
-
         boolean pop = getSupportFragmentManager().popBackStackImmediate();
         if(!pop){
             onBackPressed();
@@ -91,6 +94,11 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
             selectedBusiness = null;
         }
         return true;
+    }
+
+    public void updateBusiness(Business updatedBusiness){
+        DatabaseReference businessRef = mBuisnessesDatabaseRef.child(updatedBusiness.getId()).child("details");
+        businessRef.updateChildren(updatedBusiness.getDetailsMap());
     }
 
     @Override
