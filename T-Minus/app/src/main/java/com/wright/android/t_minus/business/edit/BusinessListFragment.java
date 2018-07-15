@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import com.wright.android.t_minus.business.apply.BusinessApplyActivity;
 import com.wright.android.t_minus.objects.Business;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class BusinessListFragment extends Fragment {
@@ -28,7 +26,6 @@ public class BusinessListFragment extends Fragment {
     private static final String ARG_BUSINESS = "ARG_BUSINESS";
     private ArrayList<Business> businesses;
     private OnListFragmentInteractionListener mListener;
-    private RecyclerView recyclerView;
     private MyBusinessRecyclerViewAdapter businessRecyclerViewAdapter;
 
 
@@ -75,7 +72,7 @@ public class BusinessListFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             businessRecyclerViewAdapter = new MyBusinessRecyclerViewAdapter(businesses, mListener);
             recyclerView.setAdapter(businessRecyclerViewAdapter);

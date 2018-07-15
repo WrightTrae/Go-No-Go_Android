@@ -25,7 +25,6 @@ import com.wright.android.t_minus.R;
 import com.wright.android.t_minus.business.apply.BusinessApplyActivity;
 import com.wright.android.t_minus.TextFieldUtils;
 import com.wright.android.t_minus.business.edit.BusinessEditActivity;
-import com.wright.android.t_minus.network_connection.GetManifestsDetailsFromAPI;
 import com.wright.android.t_minus.network_connection.NetworkUtils;
 import com.wright.android.t_minus.settings.account.LoginActivity;
 

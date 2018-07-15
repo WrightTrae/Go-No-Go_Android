@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
-import com.wright.android.t_minus.main_tabs.manifest.ManifestDetailsActivity;
 import com.wright.android.t_minus.objects.Manifest;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;

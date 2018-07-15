@@ -1,6 +1,7 @@
 package com.wright.android.t_minus.ar;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.Sensor;
@@ -82,9 +83,9 @@ public class ArActivity extends AppCompatActivity implements SensorEventListener
             }
         }
         sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
-        cameraContainerLayout = (FrameLayout) findViewById(R.id.camera_container_layout);
-        surfaceView = (SurfaceView) findViewById(R.id.surface_view);
-        tvCurrentLocation = (TextView) findViewById(R.id.tv_current_location);
+        cameraContainerLayout = findViewById(R.id.camera_container_layout);
+        surfaceView = findViewById(R.id.surface_view);
+        tvCurrentLocation = findViewById(R.id.tv_current_location);
         arOverlayView = new ArOverlayView(this, getArPointsFromPads(launchPads));
     }
 
@@ -211,7 +212,7 @@ public class ArActivity extends AppCompatActivity implements SensorEventListener
         }
 
         try   {
-            this.locationManager = (LocationManager) this.getSystemService(this.LOCATION_SERVICE);
+            this.locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
 
             // Get GPS and network status
             this.isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -251,6 +252,10 @@ public class ArActivity extends AppCompatActivity implements SensorEventListener
     private void updateLatestLocation() {
         if (arOverlayView !=null && location != null) {
             arOverlayView.updateCurrentLocation(location);
+            Log.d(TAG, String.format("Changed lat: %s lon: %s altitude: %s \n",
+                    location.getLatitude(), location.getLongitude(), location.getAltitude()));
+            tvCurrentLocation.setText(String.format("lat: %s \nlon: %s \naltitude: %s \n",
+                    location.getLatitude(), location.getLongitude(), location.getAltitude()));
         }
     }
 

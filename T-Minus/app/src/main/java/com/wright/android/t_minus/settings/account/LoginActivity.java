@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.wright.android.t_minus.R;
-import com.wright.android.t_minus.settings.PreferencesFragment;
 
 public class LoginActivity extends AppCompatActivity implements LoginListener{
 

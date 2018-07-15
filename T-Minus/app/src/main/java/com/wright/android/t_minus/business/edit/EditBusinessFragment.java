@@ -9,10 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.wright.android.t_minus.R;
-import com.wright.android.t_minus.TextFieldUtils;
 import com.wright.android.t_minus.objects.Business;
 
 public class EditBusinessFragment extends Fragment {
