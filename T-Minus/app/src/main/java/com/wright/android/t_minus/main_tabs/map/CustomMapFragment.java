@@ -2,6 +2,7 @@ package com.wright.android.t_minus.main_tabs.map;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,6 +20,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.wright.android.t_minus.business.view.BusinessViewActivity;
+import com.wright.android.t_minus.business.view.BusinessViewFragment;
 import com.wright.android.t_minus.objects.Business;
 import com.wright.android.t_minus.objects.LaunchPad;
 import com.wright.android.t_minus.objects.PadLocation;
@@ -199,7 +202,9 @@ public class CustomMapFragment extends SupportMapFragment implements OnMapReadyC
     @Override
     public boolean onMarkerClick(Marker marker) {
         if(marker.getTag() instanceof Business){
-
+            Intent intent = new Intent(getContext(), BusinessViewActivity.class);
+            intent.putExtra(BusinessViewFragment.ARG_BUSINESS, (Business)marker.getTag());
+            startActivity(intent);
         }
         return false;
     }

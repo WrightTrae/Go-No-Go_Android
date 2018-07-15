@@ -47,7 +47,7 @@
         <activity
             android:name=".settings.account.LoginActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ar.ArActivity"></activity>
+        <activity android:name=".ar.ArActivity" />
         <activity
             android:name=".business.apply.BusinessApplyActivity"
             android:screenOrientation="portrait" />
@@ -55,7 +55,8 @@
         <service android:name=".notifications.NotifService" />
         <service android:name=".notifications.ShowNotificationService" />
 
-        <activity android:name=".business.edit.BusinessEditActivity"></activity>
+        <activity android:name=".business.edit.BusinessEditActivity" />
+        <activity android:name=".business.view.BusinessViewActivity"></activity>
     </application>
 
 </manifest>

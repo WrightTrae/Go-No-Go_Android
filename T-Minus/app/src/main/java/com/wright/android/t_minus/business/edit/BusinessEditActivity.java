@@ -16,7 +16,10 @@ import java.util.ArrayList;
 
 public class BusinessEditActivity extends AppCompatActivity implements BusinessListFragment.OnListFragmentInteractionListener {
 
-    private static ArrayList<Business> businesses;
+    private ArrayList<Business> businesses;
+    private Business selectedBusiness;
+    private EditBusinessFragment editBusinessFragment;
+    private BusinessListFragment businessListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,7 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
                 for(DataSnapshot singleSnap: dataSnapshot.getChildren()){
                     boolean verified = (boolean)singleSnap.child("isVerified").getValue();
                     if (verified){
+
                         DataSnapshot detailsSnap = singleSnap.child("details");
                         businesses.add(new Business(
                                 (boolean)singleSnap.child("isVerified").getValue(),
@@ -50,7 +54,8 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
                                 (String)detailsSnap.child("description").getValue()));
                     }
                 }
-                getSupportFragmentManager().beginTransaction().add(R.id.blankFrame, BusinessListFragment.newInstance(businesses)).commit();
+                businessListFragment = BusinessListFragment.newInstance(businesses);
+                getSupportFragmentManager().beginTransaction().add(R.id.blankFrame, businessListFragment).commit();
             }
 
             @Override
@@ -62,15 +67,31 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
 
     @Override
     public boolean onSupportNavigateUp() {
+        if(editBusinessFragment != null && selectedBusiness != null) {
+            if (editBusinessFragment.checkFields()) {
+                int index = businesses.indexOf(selectedBusiness);
+                businesses.remove(index);
+                businesses.add(index, editBusinessFragment.getNewData());
+                businessListFragment.notifyListView(editBusinessFragment.getNewData(), index);
+            } else {
+                return false;
+            }
+        }
+
         boolean pop = getSupportFragmentManager().popBackStackImmediate();
         if(!pop){
             onBackPressed();
+        }else{
+            editBusinessFragment = null;
+            selectedBusiness = null;
         }
         return true;
     }
 
     @Override
-    public void onListFragmentInteraction(Business item) {
-
+    public void onListFragmentInteraction(Business item){
+        editBusinessFragment = EditBusinessFragment.newInstance(item);
+        selectedBusiness = item;
+        getSupportFragmentManager().beginTransaction().add(R.id.blankFrame, editBusinessFragment).addToBackStack("").commit();
     }
 }

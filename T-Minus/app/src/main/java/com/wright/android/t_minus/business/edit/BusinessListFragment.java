@@ -20,10 +20,11 @@ import java.util.List;
 
 public class BusinessListFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_BUSINESS = "ARG_BUSINESS";
     private ArrayList<Business> businesses;
     private OnListFragmentInteractionListener mListener;
+    private RecyclerView recyclerView;
+    private MyBusinessRecyclerViewAdapter businessRecyclerViewAdapter;
 
 
     public BusinessListFragment() {
@@ -54,13 +55,19 @@ public class BusinessListFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new MyBusinessRecyclerViewAdapter(businesses, mListener));
+            recyclerView = (RecyclerView) view;
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            businessRecyclerViewAdapter = new MyBusinessRecyclerViewAdapter(businesses, mListener);
+            recyclerView.setAdapter(businessRecyclerViewAdapter);
         }
         return view;
     }
 
+    public void notifyListView(Business newBusiness, int index){
+        businesses.remove(index);
+        businesses.add(index, newBusiness);
+        businessRecyclerViewAdapter.notifyItemChanged(index);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -80,7 +87,6 @@ public class BusinessListFragment extends Fragment {
     }
 
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Business item);
     }
 }

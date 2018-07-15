@@ -24,6 +24,8 @@ import com.wright.android.t_minus.objects.ManifestDetails;
 import com.wright.android.t_minus.R;
 import com.wright.android.t_minus.network_connection.GetManifestsDetailsFromAPI;
 import com.wright.android.t_minus.network_connection.NetworkUtils;
+import com.wright.android.t_minus.settings.PreferencesActivity;
+import com.wright.android.t_minus.settings.PreferencesFragment;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -146,11 +148,12 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
             if(manifest.getTimeDate() == null){
                 return;
             }
-            //TODO: test purposes only- set correct date later
+            notifBtn.setEnabled(false);
+            notifBtn.setText(getString(R.string.subscribed));
             Calendar cal = Calendar.getInstance();
-//            cal.setTime(manifest.getTimeDate());
-            cal.add(Calendar.SECOND , 5);
-
+            cal.setTime(manifest.getTimeDate());
+            int minutes = Integer.parseInt(getSharedPreferences(PreferencesFragment.PREFS, MODE_PRIVATE).getString(PreferencesFragment.NOTIF_PREF, "30"));
+            cal.add(Calendar.MINUTE , -minutes);
             DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
             Toast.makeText(this, dateFormat.format(cal.getTime()),Toast.LENGTH_SHORT).show();
             notificationHelper.setAlarmForNotification(cal, manifest);

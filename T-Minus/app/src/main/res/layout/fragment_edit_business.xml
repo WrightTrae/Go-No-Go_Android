@@ -1,14 +1,459 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".business.edit.EditBusinessFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    android:clickable="true"
+    android:background="@android:color/white">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context=".business.edit.EditBusinessFragment">
 
-</FrameLayout>
+
+        <ImageView
+            android:id="@+id/business_edit_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/rocket_default_image" />
+
+        <EditText
+            android:id="@+id/business_edit_name"
+            style="@style/headerText"
+            android:inputType="text"
+            android:hint="Business Name"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/business_edit_description"
+            style="@style/bodyText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Business Description"
+            android:inputType="textAutoCorrect"
+            android:singleLine="false"
+            android:textColor="@android:color/black" />
+
+    <TextView
+        style="@style/bodyText"
+        android:layout_marginTop="25dp"
+        android:text="More features are coming soon such as hours of operation and specials."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+        <!--<TextView-->
+            <!--style="@style/bodyText"-->
+            <!--android:textColor="@android:color/black"-->
+            <!--android:fontFamily="@font/roboto"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Hours of operation" />-->
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:layout_marginBottom="3dp"-->
+            <!--android:background="@android:color/darker_gray"/>-->
+
+        <!--<android.support.constraint.ConstraintLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<TextView-->
+                <!--style="@style/bodyText"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Monday"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_monday_open_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:hint="@string/open"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/monday_temp"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/monday_temp"-->
+                <!--style="@style/bodyText"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:text="@string/to"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/business_edit_monday_close_hours"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_monday_close_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/close"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+        <!--</android.support.constraint.ConstraintLayout>-->
+
+        <!--<android.support.constraint.ConstraintLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<TextView-->
+                <!--style="@style/bodyText"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Tuesday"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_tuesday_open_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:hint="@string/open"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/tuesday_temp"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tuesday_temp"-->
+                <!--style="@style/bodyText"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:text="@string/to"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/business_edit_tuesday_close_hours"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_tuesday_close_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/close"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+        <!--</android.support.constraint.ConstraintLayout>-->
+
+        <!--<android.support.constraint.ConstraintLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<TextView-->
+                <!--style="@style/bodyText"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Wednesday"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_wednesday_open_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:hint="@string/open"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/wednesday_temp"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/wednesday_temp"-->
+                <!--style="@style/bodyText"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:text="@string/to"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/business_edit_wednesday_close_hours"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_wednesday_close_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/close"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+        <!--</android.support.constraint.ConstraintLayout>-->
+
+        <!--<android.support.constraint.ConstraintLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<TextView-->
+                <!--style="@style/bodyText"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Thursday"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_thursday_open_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:hint="@string/open"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/thursday_temp"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/thursday_temp"-->
+                <!--style="@style/bodyText"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:text="@string/to"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/business_edit_thursday_close_hours"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_thursday_close_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/close"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+        <!--</android.support.constraint.ConstraintLayout>-->
+
+        <!--<android.support.constraint.ConstraintLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<TextView-->
+                <!--style="@style/bodyText"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Friday"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_friday_open_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:hint="@string/open"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/friday_temp"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/friday_temp"-->
+                <!--style="@style/bodyText"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:text="@string/to"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/business_edit_friday_close_hours"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_friday_close_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/close"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+        <!--</android.support.constraint.ConstraintLayout>-->
+
+        <!--<android.support.constraint.ConstraintLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<TextView-->
+                <!--style="@style/bodyText"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Saturday"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_saturday_open_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:hint="@string/open"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/saturday_temp"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/saturday_temp"-->
+                <!--style="@style/bodyText"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:text="@string/to"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/business_edit_saturday_close_hours"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_saturday_close_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/close"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+        <!--</android.support.constraint.ConstraintLayout>-->
+
+        <!--<android.support.constraint.ConstraintLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<TextView-->
+                <!--style="@style/bodyText"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Sunday"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_sunday_open_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:hint="@string/open"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/sunday_temp"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/sunday_temp"-->
+                <!--style="@style/bodyText"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="0dp"-->
+                <!--android:text="@string/to"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@+id/business_edit_sunday_close_hours"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/business_edit_sunday_close_hours"-->
+                <!--style="@style/bodyText"-->
+                <!--android:inputType="time"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/close"-->
+                <!--android:textColor="@android:color/black"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent" />-->
+        <!--</android.support.constraint.ConstraintLayout>-->
+
+        <!--<TextView-->
+            <!--style="@style/bodyText"-->
+            <!--android:textColor="@android:color/black"-->
+            <!--android:fontFamily="@font/roboto"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Specials" />-->
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:layout_marginBottom="3dp"-->
+            <!--android:background="@android:color/darker_gray"/>-->
+
+        <!--<EditText-->
+            <!--android:id="@+id/business_edit_specials"-->
+            <!--style="@style/bodyText"-->
+            <!--android:hint="Your specials"-->
+            <!--android:textColor="@android:color/black"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"/>-->
+    </LinearLayout>
+</ScrollView>

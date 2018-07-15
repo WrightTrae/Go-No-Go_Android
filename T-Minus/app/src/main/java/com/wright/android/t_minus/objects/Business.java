@@ -22,6 +22,34 @@ public class Business implements Serializable{
         this.address = address;
     }
 
+    public void setVerified(boolean verified) {
+        isVerified = verified;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public String getAddress() {
         return address;
     }
