@@ -51,12 +51,12 @@
                 android:icon="@drawable/ic_map_black_24dp"
                 android:text="@string/map" />
 
-            <!--<android.support.design.widget.TabItem-->
-                <!--android:id="@+id/tabItem4"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:icon="@drawable/pad_icon"-->
-                <!--android:text="@string/photos" />-->
+            <android.support.design.widget.TabItem
+                android:id="@+id/tabItem4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:icon="@drawable/ic_photo_24dp"
+                android:text="Photos" />
 
         </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>

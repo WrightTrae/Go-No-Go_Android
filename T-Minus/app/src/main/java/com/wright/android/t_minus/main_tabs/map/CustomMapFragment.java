@@ -93,23 +93,8 @@ public class CustomMapFragment extends SupportMapFragment implements OnMapReadyC
             mMap.setLocationSource(new CurrentLocationProvider(getContext()));
             locMgr.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10, 100, this);
             mMap.setMyLocationEnabled(true);
-            zoomInCamera();
         }
         addMapMarkers();
-    }
-
-    private void zoomInCamera(){
-        if(mMap == null){
-        }else
-            if(parentFrag.checkLocationPermission()) {
-            Location loc = locMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if(loc == null){
-                loc = locMgr.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }
-            LatLng officeLocation = new LatLng(loc.getLatitude(), loc.getLongitude());
-            CameraUpdate cameraMovement = CameraUpdateFactory.newLatLngZoom(officeLocation, 200);
-            mMap.animateCamera(cameraMovement);
-        }
     }
 
     private void addMapMarkers(){

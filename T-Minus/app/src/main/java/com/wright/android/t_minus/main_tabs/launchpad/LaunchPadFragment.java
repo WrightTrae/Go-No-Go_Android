@@ -10,9 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
+import com.wright.android.t_minus.R;
 import com.wright.android.t_minus.ar.ArActivity;
 import com.wright.android.t_minus.objects.PadLocation;
-import com.wright.android.t_minus.R;
+
 
 import java.util.ArrayList;
 

@@ -28,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.wright.android.t_minus.main_tabs.launchpad.LaunchPadFragment;
 import com.wright.android.t_minus.main_tabs.manifest.ManifestFragment;
 import com.wright.android.t_minus.main_tabs.map.MapBaseFragment;
+import com.wright.android.t_minus.main_tabs.photos.PhotosFragment;
 import com.wright.android.t_minus.objects.Business;
 import com.wright.android.t_minus.objects.LaunchPad;
 import com.wright.android.t_minus.objects.Manifest;
@@ -44,6 +45,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
     private LaunchPadFragment launchPadFragment;
     private ManifestFragment manifestFragment;
     private MapBaseFragment customMapFragment;
+    private PhotosFragment photosFragment;
     private ViewPager mMainViewPager;
     private DatabaseReference mDatabaseRef;
 
@@ -58,7 +60,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
 
         mMainViewPager = findViewById(R.id.container);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mMainViewPager.setOffscreenPageLimit(2);
+        mMainViewPager.setOffscreenPageLimit(3);
         mMainViewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabLayout = findViewById(R.id.tabs);
         TabLayout.Tab originalTab = tabLayout.getTabAt(0);
@@ -76,6 +78,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         manifestFragment = ManifestFragment.newInstance();
         launchPadFragment = LaunchPadFragment.newInstance();
         customMapFragment = MapBaseFragment.newInstance();
+        photosFragment = PhotosFragment.newInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         downloadManifests();
     }
@@ -318,7 +321,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
                 case 2:
                     return customMapFragment;
                 case 3:
-
+                    return photosFragment;
                 default:
                     return null;
             }
@@ -326,7 +329,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     }
 }

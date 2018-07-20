@@ -3,39 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/cellImage"
         android:layout_width="match_parent"
         android:layout_height="220dp"
         android:contentDescription="@string/rocket_image"
+        android:scaleType="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/rocket_default_image" />
 
-    <TextView
-        android:id="@+id/cellActiveLaunchText"
-        android:background="@color/transparentRed"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:visibility="gone"
-        android:text="@string/active_launch"
-        android:gravity="center"
-        android:fontFamily="@font/digital"
-        android:textSize="25sp"
-        android:textColor="@android:color/background_light"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/cellImage" />
-
     <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@color/transparentBack"
+        android:layout_height="0dp"
+        android:background="@drawable/cell_info_background"
+        app:layout_constraintTop_toTopOf="@+id/cellImage"
         app:layout_constraintBottom_toBottomOf="@+id/cellImage"
         app:layout_constraintEnd_toEndOf="@+id/cellImage"
         app:layout_constraintStart_toStartOf="@+id/cellImage">
@@ -81,4 +67,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
     </android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/cellActiveLaunchText"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/transparentRed"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_live_launch_24dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="2dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/moon"
+            android:text="@string/active_launch"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:visibility="visible" />
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

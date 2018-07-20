@@ -46,10 +46,14 @@ public class GetManifestsDetailsFromAPI extends AsyncTask<String, Void, Manifest
             if(urlArray.length() != 0){
                 url = urlArray.getString(0);
             }
-
-            JSONObject missionsJSON = obj.getJSONArray("missions").getJSONObject(0);
-            String type = missionsJSON.getString("typeName");
-            String desc = missionsJSON.getString("description");
+            JSONArray jsonArray = obj.getJSONArray("missions");
+            String type = "Not specified";
+            String desc = "No description available.";
+            if(jsonArray.length() > 0){
+                JSONObject missionsJSON = jsonArray.getJSONObject(0);
+                type = missionsJSON.getString("typeName");
+                desc = missionsJSON.getString("description");
+            }
 
             return new ManifestDetails(status,probability,windowStart,windowEnd,missionProvider,url, type, desc);
         } catch (JSONException e) {

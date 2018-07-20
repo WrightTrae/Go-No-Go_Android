@@ -62,7 +62,6 @@ public class ManifestListAdapter extends BaseAdapter{
         }
         Manifest manifest = (Manifest) getItem(_position);
         if(manifest!=null){
-            //TODO:TEST
             if(manifest.getLaunchId() == ManifestDetailsActivity.testLaunchID){
                 vh.tvLaunchAlert.setVisibility(View.VISIBLE);
             }else{
@@ -78,9 +77,8 @@ public class ManifestListAdapter extends BaseAdapter{
             }
             if(!manifest.getImageUrl().equals("https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png")){
                 Picasso picasso = Picasso.get();
-//                picasso.setIndicatorsEnabled(true);
                 picasso.load(manifest.getImageUrl()).fit().centerCrop()
-                        .placeholder(R.drawable.logo_outline).into(vh.tvImage);
+                        .placeholder(R.drawable.rocket_default_image).into(vh.tvImage);
             }else {
                 vh.tvImage.setImageDrawable(mContext.getDrawable(R.drawable.rocket_default_image));
             }
@@ -90,7 +88,7 @@ public class ManifestListAdapter extends BaseAdapter{
 
     // Optimize with view holder!
     static class ViewHolder{
-        final TextView tvLaunchAlert;
+        final View tvLaunchAlert;
         final TextView tvTitle;
         final TextView tvTime;
         final TextView tvLocation;

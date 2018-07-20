@@ -19,6 +19,8 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -89,17 +91,27 @@ public class MapBaseFragment extends Fragment {
             return;
         }
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-  if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            final EditText input = new EditText(getActivity());
+            input.setHint("Viewing Location Name");
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lp.setMarginStart(10);
+            lp.setMarginEnd(10);
+            input.setLayoutParams(lp);
+            alertDialogBuilder.setView(input);
+
             alertDialogBuilder.setTitle("Would you like to add your location as a viewing point?");
             alertDialogBuilder
                     .setMessage("A viewing is a point on the map that has a good view of the rocket launch.")
                     .setPositiveButton("Yes, I want to share", (DialogInterface dialog, int id) ->
-                        addViewingLocation())
+                            addViewingLocation(input.getText().toString()))
                     .setNegativeButton("No, I don't", null);
         }else {
             alertDialogBuilder.setTitle("Sign In Required");
             alertDialogBuilder
-                    .setMessage("You need to sign in to access this feature.")
+                    .setMessage("You need to sign in to publish a new viewing location.")
                     .setPositiveButton("Sign In", (DialogInterface dialog, int id) -> {
                         Intent intent = new Intent(getContext(), PreferencesActivity.class);
                         startActivity(intent);
@@ -109,7 +121,7 @@ public class MapBaseFragment extends Fragment {
         alertDialogBuilder.create().show();
     }
 
-    private void addViewingLocation(){
+    private void addViewingLocation(String name){
         if(checkLocationPermission()) {
             Location loc = locMgr.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             if(loc == null){
@@ -118,7 +130,7 @@ public class MapBaseFragment extends Fragment {
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("viewing_locations")
                     .push();
             HashMap<String, Object> userMap = new HashMap<>();
-            userMap.put("name", "T-Test Name");
+            userMap.put("name", name);
             userMap.put("latitude", loc.getLatitude());
             userMap.put("longitude", loc.getLongitude());
             userRef.setValue(userMap);

@@ -50,7 +50,8 @@
         <activity
             android:name=".settings.account.LoginActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ar.ArActivity" />
+        <activity
+            android:name=".ar.ArActivity" />
         <activity
             android:name=".business.apply.BusinessApplyActivity"
             android:screenOrientation="portrait" />
@@ -60,6 +61,16 @@
 
         <activity android:name=".business.view.BusinessViewActivity"
             android:screenOrientation="portrait"/>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.wright.android.t_minus.ACCESS_DATA"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
     </application>
 
 </manifest>

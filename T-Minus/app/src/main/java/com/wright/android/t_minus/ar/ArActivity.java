@@ -283,7 +283,9 @@ public class ArActivity extends AppCompatActivity implements SensorEventListener
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        locationManager.removeUpdates(this);
+        if(locationManager != null) {
+            locationManager.removeUpdates(this);
+        }
     }
 
     private boolean checkLocationPermission() {

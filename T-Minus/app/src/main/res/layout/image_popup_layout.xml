@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <ImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/popup_image"
+        android:src="@drawable/logo_outline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp" />
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="16dp"-->
+        <!--style="@style/buttonStyle.secondary"-->
+        <!--android:text="Dismiss" />-->
