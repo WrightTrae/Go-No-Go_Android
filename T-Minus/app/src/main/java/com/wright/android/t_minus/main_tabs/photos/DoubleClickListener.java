@@ -6,7 +6,7 @@ import android.os.SystemClock;
 import android.view.View;
 import android.widget.AdapterView;
 
-public abstract class DoubleClickListener implements AdapterView.OnItemClickListener {
+public abstract class DoubleClickListener implements View.OnClickListener {
 
     private static final long DEFAULT_QUALIFICATION_SPAN = 200;
     private long doubleClickQualificationSpanInMillis;
@@ -24,7 +24,7 @@ public abstract class DoubleClickListener implements AdapterView.OnItemClickList
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onClick(View view) {
         if ((SystemClock.elapsedRealtime() - timestampLastClick) < doubleClickQualificationSpanInMillis) {
             onDoubleClick(view);
             mHasDoubleClicked = true;

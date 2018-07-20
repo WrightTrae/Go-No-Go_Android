@@ -45,6 +45,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,6 +58,8 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.wright.android.t_minus.R;
+import com.wright.android.t_minus.objects.ImageObj;
+import com.wright.android.t_minus.objects.PadLocation;
 import com.wright.android.t_minus.settings.PreferencesActivity;
 
 import java.io.ByteArrayOutputStream;
@@ -132,36 +135,11 @@ public class PhotosFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if(checkForSignIn(false)){
             resetPushPath();
-            downloadImages();
+            getLikedImages();
             FloatingActionButton fab = view.findViewById(R.id.photo_capture_fab);
             fab.setOnClickListener((View v) -> showDataFromFAB());
 
             GridView gridView = view.findViewById(R.id.photoGrid);
-            gridView.setOnItemClickListener(new DoubleClickListener(500) {
-                @Override
-                public void onDoubleClick(View view) {
-                    updateDatabaseLikes(view);
-                }
-                @Override
-                public void onSingleClick(View view) {
-                    if(getContext() == null){
-                        return;
-                    }
-                    Dialog settingsDialog = new Dialog(getContext());
-                    ImageView imageView = view.findViewById(R.id.grid_image);
-                    RequestCreator requestCreator = (RequestCreator) imageView.getTag();
-                    if(settingsDialog.getWindow()!=null) {
-                        settingsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-                    }
-                    View popup = getLayoutInflater().inflate(R.layout.image_popup_layout, null);
-                    requestCreator.into((ImageView) popup.findViewById(R.id.popup_image));
-                    popup.findViewById(R.id.popup_image).setOnClickListener((View v) -> settingsDialog.dismiss());
-                    settingsDialog.setContentView(popup);
-                    settingsDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                    settingsDialog.setCancelable(true);
-                    settingsDialog.show();
-                }
-            });
             photoAdapter = new PhotoAdapter(getContext());
             gridView.setAdapter(photoAdapter);
         }
@@ -268,22 +246,34 @@ public class PhotosFragment extends Fragment {
         return imageFile;
     }
 
-    private void downloadImages(){
+    private void downloadImages(ArrayList<String> likedImagesIds){
         if(checkForSignIn(true)) {
             DatabaseReference imageRef = FirebaseDatabase.getInstance().getReference().child("images");
             imageRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String downloadURL = (String) snapshot.child("path").getValue();
-                        if (downloadURL == null) {
+                        String id = snapshot.getKey();
+                        String path = (String) snapshot.child("path").getValue();
+                        long likes = (long)snapshot.child("likes").getValue();
+                        boolean reported = (boolean)snapshot.child("reported").getValue();
+                        String time = (String)snapshot.child("time_stamp").getValue();
+                        String userId = (String)snapshot.child("user_id").getValue();
+                        ImageObj imageObj = new ImageObj(
+                                id,
+                                path == null ? "" : path,
+                                likes,
+                                reported,
+                                time == null ? "" : time,
+                                userId == null ? "" : userId);
+                        if (imageObj.getPath().equals("")||imageObj.isReported()) {
                             continue;
                         }
-                        StorageReference storageRef = storageReference.child(downloadURL);
+                        StorageReference storageRef = storageReference.child(imageObj.getPath());
                         storageRef.getDownloadUrl().addOnCompleteListener((@NonNull Task<Uri> task) -> {
                             if (task.getException() == null) {
-                                photoAdapter.addData(task.getResult().toString());
-                                photoAdapter.notifyDataSetChanged();
+                                imageObj.setDownloadUrl(task.getResult().toString());
+                                downloadFinished(likedImagesIds, imageObj);
                             }
                         });
                     }
@@ -292,6 +282,35 @@ public class PhotosFragment extends Fragment {
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                }
+            });
+        }
+    }
+
+    private void downloadFinished(ArrayList<String> list, ImageObj imageObj){
+        boolean isLiked = list.stream().anyMatch((listId -> listId.equals(imageObj.getId())));
+        imageObj.setLiked(isLiked);
+        photoAdapter.addData(imageObj);
+        photoAdapter.notifyDataSetChanged();
+    }
+
+    private void getLikedImages(){
+        if(checkForSignIn(false)) {
+            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users")
+                    .child(FirebaseAuth.getInstance().getUid());
+            usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    ArrayList<String> likedImagesId = new ArrayList<>();
+                    for(DataSnapshot snap: dataSnapshot.child("likes").getChildren()){
+                        likedImagesId.add(snap.getKey());
+                    }
+                    downloadImages(likedImagesId);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    downloadImages(new ArrayList<>());
                 }
             });
         }
@@ -311,7 +330,7 @@ public class PhotosFragment extends Fragment {
                         progressDialog.dismiss();
                         addImageUrlToDatabase(stringUri);
                         photoAdapter.resetData();
-                        downloadImages();
+                        getLikedImages();
                         Toast.makeText(getActivity(), "Uploaded", Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener((@NonNull Exception e)-> {
@@ -343,18 +362,6 @@ public class PhotosFragment extends Fragment {
             HashMap<String, Object> userMap = new HashMap<>();
             userMap.put(activeImageDatabaseReference.getKey(), stringUri);
             userRef.updateChildren(userMap);
-            resetPushPath();
-        }
-    }
-
-    private void updateDatabaseLikes(View v){
-        if (checkForSignIn(true)){
-            TextView likes = v.findViewById(R.id.grid_cell_likes);
-            int likeInt = Integer.parseInt(likes.getText().toString());
-            likes.setText(String.valueOf(likeInt + 1));
-            HashMap<String, Object> userMap = new HashMap<>();
-            userMap.put("likes", 0);
-            activeImageDatabaseReference.setValue(userMap);
             resetPushPath();
         }
     }

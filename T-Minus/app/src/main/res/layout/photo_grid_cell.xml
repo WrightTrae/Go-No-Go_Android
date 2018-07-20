@@ -21,6 +21,7 @@
         app:srcCompat="@drawable/logo_outline" />
 
     <LinearLayout
+        android:id="@+id/photo_cell_like_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -30,9 +31,11 @@
         app:layout_constraintTop_toTopOf="@+id/grid_image">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/photo_cell_like_image"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
             android:layout_marginEnd="2dp"
+            android:layout_gravity="center"
             android:layout_weight="1"
             app:srcCompat="@drawable/ic_thumb_up_24dp" />
 
@@ -41,9 +44,10 @@
             style="@style/bodyText"
             android:textColor="@android:color/white"
             android:layout_margin="0dp"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="100" />
+            android:text="100"/>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
