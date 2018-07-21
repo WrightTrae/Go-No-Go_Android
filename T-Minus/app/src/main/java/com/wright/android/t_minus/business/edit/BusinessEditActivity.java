@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,6 +22,7 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
     private EditBusinessFragment editBusinessFragment;
     private BusinessListFragment businessListFragment;
     DatabaseReference mBuisnessesDatabaseRef;
+    DatabaseReference mUserDatabaseRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,27 +34,49 @@ public class BusinessEditActivity extends AppCompatActivity implements BusinessL
             getSupportActionBar().setTitle("");
         }
         mBuisnessesDatabaseRef = FirebaseDatabase.getInstance().getReference().child("businesses");
-        getBusinessesData();
+        mUserDatabaseRef = FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getUid())
+        .child("businesses");
+        getYourBuisnessData();
     }
 
-    private void getBusinessesData(){
+    private void getYourBuisnessData(){
+        mUserDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<String> userBusinessIds = new ArrayList<>();
+                for(DataSnapshot snap: dataSnapshot.getChildren()){
+                    userBusinessIds.add(snap.getKey());
+                }
+                getBusinessesData(userBusinessIds);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getBusinessesData(ArrayList<String> ids){
         mBuisnessesDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 businesses = new ArrayList<>();
-                for(DataSnapshot singleSnap: dataSnapshot.getChildren()){
-                    boolean verified = (boolean)singleSnap.child("isVerified").getValue();
-                    if (verified){
-                        DataSnapshot detailsSnap = singleSnap.child("details");
-                        businesses.add(new Business(
-                                singleSnap.getKey(),
-                                (boolean)singleSnap.child("isVerified").getValue(),
-                                (String)detailsSnap.child("name").getValue(),
-                                (String)detailsSnap.child("number").getValue(),
-                                (double)detailsSnap.child("latitude").getValue(),
-                                (double)detailsSnap.child("longitude").getValue(),
-                                (String) detailsSnap.child("address").getValue(),
-                                (String)detailsSnap.child("description").getValue()));
+                for(DataSnapshot singleSnap: dataSnapshot.getChildren()) {
+                    if (ids.contains(singleSnap.getKey())) {
+                        boolean verified = (boolean) singleSnap.child("isVerified").getValue();
+                        if (verified) {
+                            DataSnapshot detailsSnap = singleSnap.child("details");
+                            businesses.add(new Business(
+                                    singleSnap.getKey(),
+                                    (boolean) singleSnap.child("isVerified").getValue(),
+                                    (String) detailsSnap.child("name").getValue(),
+                                    (String) detailsSnap.child("number").getValue(),
+                                    (double) detailsSnap.child("latitude").getValue(),
+                                    (double) detailsSnap.child("longitude").getValue(),
+                                    (String) detailsSnap.child("address").getValue(),
+                                    (String) detailsSnap.child("description").getValue()));
+                        }
                     }
                 }
                 onBusinessDataFinish(businesses);

@@ -82,13 +82,16 @@ public class BusinessApplyActivity extends AppCompatActivity implements Business
         finish();
     }
 
-    private void updateUser(){
+    private void updateUser(String businessId, String businessName){
         if(user == null){
             return;
         }
         DatabaseReference userRef = databaseReference.child("users").child(user.getUid());
         HashMap<String, Object> userMap = new HashMap<>();
         userMap.put("admin_in_progress", true);
+        HashMap<String, Object> businessMap = new HashMap<>();
+        businessMap.put(businessId, businessName);
+        userMap.put("businesses", businessMap);
         userRef.updateChildren(userMap);
     }
 
@@ -121,6 +124,6 @@ public class BusinessApplyActivity extends AppCompatActivity implements Business
             new AlertDialog.Builder(this).setTitle("Unexpected Error")
                     .setMessage("Sorry, something went wrong on our in. Please try again later")
                     .setNeutralButton("Okay", null))
-                .addOnCompleteListener(((@NonNull Task<Void> task)->updateUser()));
+                .addOnCompleteListener(((@NonNull Task<Void> task)->updateUser(businessRef.getKey(), name)));
     }
 }
