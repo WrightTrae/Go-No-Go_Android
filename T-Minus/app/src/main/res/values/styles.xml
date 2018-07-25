@@ -20,6 +20,7 @@
     <style name="sub_tab_text" parent="@android:style/TextAppearance.Widget.TabWidget">
         <item name="android:fontFamily">@font/moon</item>
         <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/unselectedTabColor</item>
     </style>
 
     <style name="MyTheme" parent="ThemeOverlay.AppCompat.Light">

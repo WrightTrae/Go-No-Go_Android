@@ -29,6 +29,7 @@ import com.wright.android.t_minus.main_tabs.launchpad.LaunchPadFragment;
 import com.wright.android.t_minus.main_tabs.manifest.ManifestFragment;
 import com.wright.android.t_minus.main_tabs.map.MapBaseFragment;
 import com.wright.android.t_minus.main_tabs.photos.PhotosFragment;
+import com.wright.android.t_minus.network_connection.GetAgencyUrlAPI;
 import com.wright.android.t_minus.objects.Business;
 import com.wright.android.t_minus.objects.LaunchPad;
 import com.wright.android.t_minus.objects.Manifest;
@@ -83,7 +84,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         downloadManifests();
     }
 
-    private void downloadManifests(){/////////////////Download Data\\\\\\\\\\\\\\\\\\\\
+    private void downloadManifests(){
         if(NetworkUtils.isConnected(this)){
             new GetManifestsFromAPI(this).execute();
         }else{
@@ -93,7 +94,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
     }
 
     @Override
-    public void onFinished(Manifest[] _manifests) {
+    public void onFinished(Manifest[] _manifests) {//downloadManifests Finish
         ArrayList<PadLocation> padLocations = new ArrayList<>();
         for(Manifest manifest:_manifests){
             if(manifest.getPadLocation() == null){

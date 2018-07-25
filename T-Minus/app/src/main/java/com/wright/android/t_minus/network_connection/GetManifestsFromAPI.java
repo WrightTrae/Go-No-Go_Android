@@ -49,7 +49,7 @@ public class GetManifestsFromAPI extends AsyncTask<String, Void, Manifest[]> {
         calendar.add(Calendar.MINUTE, 60);
         String testFormattedDate = testdf.format(calendar.getTime());
         ManifestArrayList.add(new Manifest(ManifestDetailsActivity.testLaunchID, "Go/No-Go Test Launch", testFormattedDate,
-                "https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png", null));
+                "https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png", null,null, null));
 
 
         try {
@@ -72,7 +72,18 @@ public class GetManifestsFromAPI extends AsyncTask<String, Void, Manifest[]> {
                 JSONObject locationObj = obj.getJSONObject("location");
                 String location  = locationObj.getString("name");
                 int locationId  = locationObj.getInt("id");
-                String imageURL = obj.getJSONObject("rocket").getString("imageURL");
+                JSONObject rocketObj = obj.getJSONObject("rocket");
+                String imageURL = rocketObj.getString("imageURL");
+                if(imageURL.equals("https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png")){
+                    imageURL = null;
+                }
+                JSONArray agencyArray = rocketObj.getJSONArray("agencies");
+                String agencyURL = null;
+                String agencyName = null;
+                if(agencyArray.length() > 0){
+                    agencyURL = agencyArray.getJSONObject(0).getString("infoURL");
+                    agencyName = agencyArray.getJSONObject(0).getString("name");
+                }
 
                 JSONArray padsArrayJSON = locationObj.getJSONArray("pads");
                 ArrayList<LaunchPad> launchPads = null;
@@ -87,7 +98,8 @@ public class GetManifestsFromAPI extends AsyncTask<String, Void, Manifest[]> {
                     Double padLong = padObj.getDouble("longitude");
                     launchPads.add(new LaunchPad(padId, padName,padLat,padLong,locationId));
                 }
-                ManifestArrayList.add(new Manifest(id,title,formattedDate,imageURL, new PadLocation(locationId,location,launchPads)));
+                ManifestArrayList.add(new Manifest(id,title,formattedDate,imageURL, agencyName, agencyURL,
+                        new PadLocation(locationId,location,launchPads)));
             }
             return ManifestArrayList;
         } catch (JSONException | ParseException e) {

@@ -16,15 +16,37 @@ public class Manifest implements Serializable {
     private final String title;
     private final String time;
     private final String imageUrl;
+    private final String agencyName;
+    private String agencyURL;
     private final PadLocation padLocation;
     private ManifestDetails manifestDetails;
 
-    public Manifest(int launchId, String title, String time, String imageUrl, PadLocation padLocation) {
+    public Manifest(int launchId, String title, String time, String imageUrl, String agencyName, String agencyURL, PadLocation padLocation) {
         this.launchId = launchId;
         this.title = title;
         this.time = time;
         this.imageUrl = imageUrl;
         this.padLocation = padLocation;
+        this.agencyURL = agencyURL;
+        this.agencyName = agencyName;
+    }
+
+    public String getAgencyName() {
+        return agencyName;
+    }
+
+    public String getAgencyURL() {
+//        StringBuilder stringBuilder = new StringBuilder(agencyURL);
+//        if(agencyURL == null || agencyURL.trim().isEmpty() || stringBuilder.charAt(0) != 'h'){
+//            return "InvalidUrl";
+//        }
+//        int backSlashIndex = stringBuilder.indexOf("/",8);
+//        stringBuilder.delete(backSlashIndex, stringBuilder.length()-1);
+        return agencyURL;
+    }
+
+    public void setAgencyURL(String agencyURL) {
+        this.agencyURL = agencyURL;
     }
 
     public void setManifestDetails(ManifestDetails manifestDetails) {

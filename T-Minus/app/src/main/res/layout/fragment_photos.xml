@@ -10,7 +10,9 @@
         android:id="@+id/photoGrid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="2"/>
+        android:stretchMode="columnWidth"
+        android:gravity="center"
+        android:numColumns="auto_fit"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/photo_capture_fab"

@@ -10,7 +10,7 @@
     <color name="transparentDarkBlack">#90000000</color>
     <color name="transparentRed">#70BD1204</color>
     <color name="activeRed">#BD1204</color>
-    <color name="transparentGreen">#7000BA4A</color>
+    <color name="transparentGreen">#8000BA4A</color>
     <color name="selectedTabColor">#FFFFFF</color>
-    <color name="unselectedTabColor">#808080</color>
+    <color name="unselectedTabColor">#AAAAAA</color>
 </resources>

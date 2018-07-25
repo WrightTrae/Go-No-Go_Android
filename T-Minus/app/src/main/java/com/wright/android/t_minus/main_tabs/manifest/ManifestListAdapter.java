@@ -12,6 +12,9 @@ import com.squareup.picasso.Picasso;
 import com.wright.android.t_minus.objects.Manifest;
 import com.wright.android.t_minus.R;
 
+import java.util.Calendar;
+import java.util.Date;
+
 
 public class ManifestListAdapter extends BaseAdapter{
     // BASE ID
@@ -62,7 +65,12 @@ public class ManifestListAdapter extends BaseAdapter{
         }
         Manifest manifest = (Manifest) getItem(_position);
         if(manifest!=null){
-            if(manifest.getLaunchId() == ManifestDetailsActivity.testLaunchID){
+            Calendar calendar = Calendar.getInstance();
+            Date currentTime = calendar.getTime();
+            calendar.add(Calendar.HOUR, 24);
+            Date offsetTime = calendar.getTime();
+            Date launchTime = manifest.getTimeDate();
+            if(launchTime.after(currentTime) && launchTime.before(offsetTime)){
                 vh.tvLaunchAlert.setVisibility(View.VISIBLE);
             }else{
                 vh.tvLaunchAlert.setVisibility(View.GONE);
@@ -75,12 +83,18 @@ public class ManifestListAdapter extends BaseAdapter{
             }else {
                 vh.tvLocation.setText(manifest.getPadLocation().getName());
             }
-            if(!manifest.getImageUrl().equals("https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png")){
-                Picasso picasso = Picasso.get();
+            Picasso picasso = Picasso.get();
+            if(manifest.getImageUrl()!=null &&
+                    !manifest.getImageUrl().trim().isEmpty()){
                 picasso.load(manifest.getImageUrl()).fit().centerCrop()
                         .placeholder(R.drawable.rocket_default_image).into(vh.tvImage);
             }else {
-                vh.tvImage.setImageDrawable(mContext.getDrawable(R.drawable.rocket_default_image));
+                if(manifest.getAgencyURL() == null){
+                    vh.tvImage.setImageDrawable(mContext.getDrawable(R.drawable.rocket_default_image));
+                }else {
+                    picasso.load(manifest.getAgencyURL()+"?size=700")
+                            .fit().centerCrop().placeholder(R.drawable.rocket_default_image).into(vh.tvImage);
+                }
             }
         }
         return _recycleView;
