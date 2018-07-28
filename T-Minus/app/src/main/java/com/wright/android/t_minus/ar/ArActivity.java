@@ -83,7 +83,7 @@ public class ArActivity extends AppCompatActivity {
     private void setupAr(){
         SharedPreferences onBoardPrefs = getPreferences(MODE_PRIVATE);
         boolean shown = onBoardPrefs.getBoolean("shown", false);
-        if(shown) {
+        if(!shown) {
             Dialog onboardDialog = new Dialog(this);
             if (onboardDialog.getWindow() != null) {
                 onboardDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
