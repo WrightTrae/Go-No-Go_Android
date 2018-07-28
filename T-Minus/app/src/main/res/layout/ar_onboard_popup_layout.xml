@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_gravity="center"
+    android:paddingStart="5dp"
+    android:paddingEnd="5dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:layout_margin="30dp"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_transparent_background"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:textColor="@android:color/white"
+        style="@style/headerText"
+        android:gravity="center"
+        android:text="@string/explore_your_surroundings" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        style="@style/bodyText"
+        android:gravity="center"
+        android:text="@string/welcome_to_the_launch_pad_locatorlook_around_to_view_the_launch_pad_s_that_are_near_you_you_can_click_on_a_launch_pad_to_get_the_name_of_the_pad" />
+</LinearLayout>

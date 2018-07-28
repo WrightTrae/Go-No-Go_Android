@@ -2,6 +2,7 @@ package com.wright.android.t_minus.settings.account;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,9 +15,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 import com.wright.android.t_minus.TextFieldUtils;
 import com.wright.android.t_minus.R;
 
@@ -70,6 +73,28 @@ public class LoginFragment extends Fragment {
 
         view.findViewById(R.id.email_sign_in_button).setOnClickListener((v)->attemptLogin());
         view.findViewById(R.id.email_sign_up_button).setOnClickListener((v)->mListener.OperationSwitch(this));
+        view.findViewById(R.id.login_reset_password).setOnClickListener((v)->{
+            final EditText input = new EditText(getActivity());
+            input.setHint("Your Email");
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            lp.setMarginStart(20);
+            lp.setMarginEnd(20);
+            input.setLayoutParams(lp);
+            input.setText(mEmailView.getText());
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+            alertDialogBuilder.setView(input);
+            alertDialogBuilder.setTitle("Reset Password");
+            alertDialogBuilder
+                    .setMessage("A email will be sent to you shortly, follow the instruction to reset your password.")
+                    .setCancelable(false)
+                    .setPositiveButton("reset password", (DialogInterface dialog, int id) ->
+                            mAuth.sendPasswordResetEmail(input.getText().toString()))
+                    .setNeutralButton("cancel", null);
+            alertDialogBuilder.create().show();
+        });
 
         mProgressView = view.getRootView().findViewById(R.id.email_login_progress);
     }

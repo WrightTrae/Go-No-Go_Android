@@ -83,7 +83,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
         downloadManifests();
     }
 
-    private void downloadManifests(){/////////////////Download Data\\\\\\\\\\\\\\\\\\\\
+    private void downloadManifests(){
         if(NetworkUtils.isConnected(this)){
             new GetManifestsFromAPI(this).execute();
         }else{
@@ -93,7 +93,7 @@ public class MainTabbedActivity extends AppCompatActivity implements GetManifest
     }
 
     @Override
-    public void onFinished(Manifest[] _manifests) {
+    public void onFinished(Manifest[] _manifests) {//downloadManifests Finish
         ArrayList<PadLocation> padLocations = new ArrayList<>();
         for(Manifest manifest:_manifests){
             if(manifest.getPadLocation() == null){

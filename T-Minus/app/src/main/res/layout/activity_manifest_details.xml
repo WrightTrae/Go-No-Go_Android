@@ -29,6 +29,8 @@
                 android:id="@+id/manifestDetailsImage"
                 android:layout_width="0dp"
                 android:layout_height="350dp"
+                android:scaleType="center"
+                android:background="#E3E3E3"
                 android:contentDescription="@string/rocket_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +40,6 @@
                 android:id="@+id/detailsMissionStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/transparentBack"
                 android:fontFamily="@font/roboto"
                 android:gravity="center"
                 android:paddingBottom="10dp"
@@ -52,7 +53,6 @@
             <android.support.constraint.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/transparentBack"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/manifestDetailsImage"
                 app:layout_constraintTop_toTopOf="@+id/manifestDetailsImage">

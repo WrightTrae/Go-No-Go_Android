@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <ImageView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/popup_image"
         android:src="@drawable/logo_outline"
         android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:padding="5dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/popup_report_btn"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp" />
-    <!--<Button-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="16dp"-->
-        <!--style="@style/buttonStyle.secondary"-->
-        <!--android:text="Dismiss" />-->
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        style="@style/buttonStyle.secondary"
+        android:text="Report" />
+</LinearLayout>

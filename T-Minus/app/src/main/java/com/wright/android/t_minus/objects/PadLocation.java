@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class PadLocation implements Serializable{
     private final int id;
     private String name;
-    private ArrayList<LaunchPad> launchPads;
+    private final ArrayList<LaunchPad> launchPads;
 
     public PadLocation(int id, String name, ArrayList<LaunchPad> launchPads) {
         this.id = id;

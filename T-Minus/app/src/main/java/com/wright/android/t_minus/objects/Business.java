@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 public class Business implements Serializable{
-    private String id;
+    private final String id;
     private boolean isVerified;
     private String name;
     private String number;

@@ -3,14 +3,14 @@ package com.wright.android.t_minus.objects;
 import java.io.Serializable;
 
 public class ManifestDetails implements Serializable {
-    private String status;
-    private String probability;
-    private String windowStart;
-    private String windowEnd;
-    private String missionProvider;
-    private String url;
-    private String type;
-    private String description;
+    private final String status;
+    private final String probability;
+    private final String windowStart;
+    private final String windowEnd;
+    private final String missionProvider;
+    private final String url;
+    private final String type;
+    private final String description;
 
     public ManifestDetails(String status, String probability, String windowStart, String windowEnd, String missionProvider, String url, String type, String description) {
         this.status = status;

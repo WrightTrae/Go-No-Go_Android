@@ -1,15 +1,22 @@
 package com.wright.android.t_minus.ar;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.google.ar.core.Frame;
@@ -74,6 +81,37 @@ public class ArActivity extends AppCompatActivity {
     }
 
     private void setupAr(){
+        SharedPreferences onBoardPrefs = getPreferences(MODE_PRIVATE);
+        boolean shown = onBoardPrefs.getBoolean("shown", false);
+        if(!shown) {
+            Dialog onboardDialog = new Dialog(this);
+            if (onboardDialog.getWindow() != null) {
+                onboardDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+                onboardDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+            View popup = LayoutInflater.from(this).inflate(R.layout.ar_onboard_popup_layout, null);
+            onboardDialog.setContentView(popup);
+            onboardDialog.setCancelable(true);
+            onboardDialog.show();
+
+            // Hide after some seconds
+            final Handler handler = new Handler();
+            final Runnable runnable = () -> {
+                if (onboardDialog.isShowing()) {
+                    onboardDialog.dismiss();
+                }
+            };
+
+            onboardDialog.setOnDismissListener((DialogInterface dialog) ->
+                    handler.removeCallbacks(runnable));
+            handler.postDelayed(runnable, 10000);
+
+            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putBoolean("shown", true);
+            editor.apply();
+        }
+
         CompletableFuture<ModelRenderable> andy = ModelRenderable.builder()
                 .setSource(this, R.raw.model)
                 .build();

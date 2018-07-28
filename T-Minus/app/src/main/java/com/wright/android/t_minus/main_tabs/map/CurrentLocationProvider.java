@@ -14,7 +14,7 @@ import com.google.android.gms.maps.LocationSource;
 // Java File Name
 public class CurrentLocationProvider implements LocationSource, LocationListener {
     private OnLocationChangedListener listener;
-    private LocationManager locationManager;
+    private final LocationManager locationManager;
 
     public CurrentLocationProvider(Context context)
     {

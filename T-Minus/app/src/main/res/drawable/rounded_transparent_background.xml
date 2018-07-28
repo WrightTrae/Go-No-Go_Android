@@ -5,9 +5,12 @@
         <shape>
             <gradient
                 android:endColor="@android:color/transparent"
-                android:centerColor="@color/transparentBack"
                 android:startColor="@color/transparentDarkBlack"
-                android:angle="90"/>
+                android:centerColor="@color/transparentBack"
+                android:gradientRadius="850"
+                android:type="radial"/>
+            <corners
+                android:radius="15dp" />
         </shape>
     </item>
 </selector>

@@ -100,11 +100,18 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
     }
 
     private void setUpUi(){
-        if(!manifest.getImageUrl().equals("https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png")){
-            Picasso.get().load(manifest.getImageUrl()).fit().centerCrop()
-                    .placeholder(R.drawable.logo_outline).into((ImageView)findViewById(R.id.manifestDetailsImage));
+        ImageView imageView = findViewById(R.id.manifestDetailsImage);
+        Picasso picasso = Picasso.get();
+        if(manifest.getImageUrl() != null){
+            picasso.load(manifest.getImageUrl()).fit().centerCrop()
+                    .placeholder(R.drawable.logo_outline).into(imageView);
         }else {
-            ((ImageView)findViewById(R.id.manifestDetailsImage)).setImageDrawable(getDrawable(R.drawable.rocket_default_image));
+            if(manifest.getAgencyURL() == null){
+                imageView.setImageDrawable(getDrawable(R.drawable.rocket_default_image));
+            }else {
+                picasso.load(manifest.getAgencyURL()+"?size=700")
+                        .fit().centerCrop().placeholder(R.drawable.rocket_default_image).into(imageView);
+            }
         }
         FloatingActionButton fab = findViewById(R.id.manifestFab);
         if (manifest.getPadLocation() == null || manifest.getPadLocation().getLaunchPads()==null){
@@ -125,7 +132,9 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
         final ManifestDetails manifestDetails = manifest.getManifestDetails();
         ((TextView)findViewById(R.id.detailsMissionStatus)).setText(manifestDetails.getStatus());
         if(manifestDetails.getStatus().toLowerCase().equals("launch is go")){
-            findViewById(R.id.detailsMissionStatus).setBackgroundColor(getColor(R.color.transparentGreen));
+            imageView.setForeground(getDrawable(R.drawable.go_launch_background));
+        }else{
+            imageView.setForeground(getDrawable(R.drawable.no_go_launch_background));
         }
         ((TextView)findViewById(R.id.detailsType)).setText(String.format(getString(R.string.type), manifestDetails.getType()));
         ((TextView)findViewById(R.id.detailsProbability)).setText(String.format(getString(R.string.probability), manifestDetails.getProbability()));
