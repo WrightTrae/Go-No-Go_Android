@@ -97,8 +97,8 @@ public class MapBaseFragment extends Fragment {
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.setMarginStart(10);
-            lp.setMarginEnd(10);
+            lp.setMarginStart(20);
+            lp.setMarginEnd(20);
             input.setLayoutParams(lp);
             alertDialogBuilder.setView(input);
 

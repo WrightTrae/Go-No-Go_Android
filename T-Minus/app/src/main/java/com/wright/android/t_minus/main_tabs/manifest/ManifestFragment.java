@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,6 @@ import com.wright.android.t_minus.network_connection.GetAgencyUrlAPI;
 import com.wright.android.t_minus.network_connection.NetworkUtils;
 import com.wright.android.t_minus.objects.Manifest;
 import com.wright.android.t_minus.R;
-
-import java.util.ArrayList;
 
 public class ManifestFragment extends Fragment implements ListView.OnItemClickListener, GetAgencyUrlAPI.OnFinished{
 

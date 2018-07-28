@@ -8,8 +8,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -35,7 +33,7 @@ public class CustomMapFragment extends SupportMapFragment implements OnMapReadyC
     public static final String TAG = "Mapfragment.TAG";
     private ArrayList<PadLocation> padLocations;
     private ArrayList<Business> businesses;
-    private ArrayList<ViewingLocation> viewingLocations = new ArrayList<>();
+    private final ArrayList<ViewingLocation> viewingLocations = new ArrayList<>();
     private LocationManager locMgr;
     private GoogleMap mMap;
     private MapBaseFragment parentFrag;

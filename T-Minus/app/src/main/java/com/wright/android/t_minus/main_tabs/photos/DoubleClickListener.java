@@ -4,12 +4,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.view.View;
-import android.widget.AdapterView;
 
 public abstract class DoubleClickListener implements View.OnClickListener {
 
     private static final long DEFAULT_QUALIFICATION_SPAN = 200;
-    private long doubleClickQualificationSpanInMillis;
+    private final long doubleClickQualificationSpanInMillis;
     private long timestampLastClick;
     private boolean mHasDoubleClicked = false;
 
@@ -42,7 +41,7 @@ public abstract class DoubleClickListener implements View.OnClickListener {
 
 
     private class doubleClickHandler extends Handler{
-        private View view;
+        private final View view;
 
         doubleClickHandler(View view) {
             this.view = view;

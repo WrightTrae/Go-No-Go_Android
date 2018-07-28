@@ -6,11 +6,10 @@ import com.wright.android.t_minus.objects.Manifest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import java.util.ArrayList;
 
 public class GetAgencyUrlAPI extends AsyncTask<String, Void, Manifest[]> {
     final private OnFinished mFinishedInterface;
-    private Manifest[] manifestArrayList;
+    private final Manifest[] manifestArrayList;
 
 
     public interface OnFinished {

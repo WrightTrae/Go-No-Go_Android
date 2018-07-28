@@ -1,6 +1,7 @@
 package com.wright.android.t_minus.settings;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,16 +12,25 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 import com.wright.android.t_minus.R;
 import com.wright.android.t_minus.business.apply.BusinessApplyActivity;
 import com.wright.android.t_minus.TextFieldUtils;
@@ -180,25 +190,71 @@ public class PreferencesFragment extends PreferenceFragment {
 
     }
 
-    private final Preference.OnPreferenceClickListener mPrefClick = new Preference.OnPreferenceClickListener() {
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mActivity);
-            alertDialogBuilder.setTitle(preference.getTitle());
-            alertDialogBuilder
-                    .setMessage("A email will be sent to you shortly, follow the instruction to reset your password.")
-                    .setCancelable(false)
-                    .setPositiveButton("reset password", (DialogInterface dialog, int id) -> {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if(user != null && user.getEmail() != null) {
-                            mAuth.sendPasswordResetEmail(user.getEmail());
-                        }
-                    })
-                    .setNegativeButton("cancel", null);
-            alertDialogBuilder.create().show();
-            return false;
-        }
+    private final Preference.OnPreferenceClickListener mPrefClick = (Preference preference) -> {
+        Dialog passwordDialog = new Dialog(getContext());
+        View popup = LayoutInflater.from(getContext()).inflate(R.layout.fragment_password_change, null);
+        popup.findViewById(R.id.change_save).setOnClickListener((View v) -> attemptPasswordChange(passwordDialog, popup));
+        popup.findViewById(R.id.change_cancel).setOnClickListener((View v) -> passwordDialog.dismiss());
+        passwordDialog.setTitle("Password Reset");
+        passwordDialog.setContentView(popup);
+        passwordDialog.setCancelable(true);
+        passwordDialog.show();
+        return false;
     };
+
+    private void attemptPasswordChange(Dialog passwordDialog, View view) {
+        if(mAuth.getCurrentUser() == null){
+            return;
+        }
+        EditText currentPassword =  view.findViewById(R.id.change_current_password);
+        EditText newPassword = view.findViewById(R.id.change_new_password);
+        EditText retypePassword = view.findViewById(R.id.change_retype_password);
+
+        currentPassword.setError(null);
+        newPassword.setError(null);
+        retypePassword.setError(null);
+
+        // Store values at the time of the login attempt.
+        String currentP = currentPassword.getText().toString();
+        String newP = newPassword.getText().toString();
+        String reP = retypePassword.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        if (TextUtils.isEmpty(reP) && TextFieldUtils.isPasswordInvalid(reP)) {
+            retypePassword.setError(getString(R.string.error_invalid_password));
+            focusView = retypePassword;
+            cancel = true;
+        }
+
+        if (TextUtils.isEmpty(newP) && TextFieldUtils.isPasswordInvalid(newP) && !newP.equals(reP)) {
+            retypePassword.setError(getString(R.string.error_invalid_password));
+            focusView = retypePassword;
+            cancel = true;
+        }
+
+        //TODO: FIX THIS
+        if (TextUtils.isEmpty(currentP) && TextFieldUtils.isPasswordInvalid(currentP)) {
+            retypePassword.setError(getString(R.string.error_invalid_password));
+            focusView = retypePassword;
+            cancel = true;
+        }
+
+        if (cancel) {
+            focusView.requestFocus();
+        } else {
+            mAuth.getCurrentUser().updatePassword(newP).addOnSuccessListener((Void aVoid) -> {
+                Toast.makeText(getContext(), "Password has been changed", Toast.LENGTH_SHORT).show();
+                passwordDialog.dismiss();
+            }).addOnFailureListener((@NonNull Exception e) -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Unexpected Error")
+                        .setMessage(e.getMessage())
+                        .setNeutralButton("ok", null).show();
+            });
+        }
+    }
 
     private final Preference.OnPreferenceChangeListener mPrefChanged = new Preference.OnPreferenceChangeListener() {
         @Override
