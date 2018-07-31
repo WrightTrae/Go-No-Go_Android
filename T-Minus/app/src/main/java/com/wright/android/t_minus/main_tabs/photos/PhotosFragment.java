@@ -67,6 +67,7 @@ public class PhotosFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if(checkForSignIn(false)){
+            photoAdapter.resetData();
             getLikedImages();//TODO
         }
     }
