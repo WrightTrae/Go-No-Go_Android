@@ -66,7 +66,9 @@ public class PhotosFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        checkForSignIn(false);
+        if(checkForSignIn(false)){
+            getLikedImages();//TODO
+        }
     }
 
     @Override
@@ -106,15 +108,14 @@ public class PhotosFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        GridView gridView = view.findViewById(R.id.photoGrid);
+        photoAdapter = new PhotoAdapter(getContext());//TODO
+        gridView.setAdapter(photoAdapter);
         if(checkForSignIn(false)){
             resetPushPath();
             getLikedImages();
             FloatingActionButton fab = view.findViewById(R.id.photo_capture_fab);
             fab.setOnClickListener((View v) -> showDataFromFAB());
-
-            GridView gridView = view.findViewById(R.id.photoGrid);
-            photoAdapter = new PhotoAdapter(getContext());
-            gridView.setAdapter(photoAdapter);
         }
     }
 
