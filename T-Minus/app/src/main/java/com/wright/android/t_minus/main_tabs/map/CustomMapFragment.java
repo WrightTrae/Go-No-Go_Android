@@ -52,6 +52,9 @@ public class CustomMapFragment extends SupportMapFragment implements OnMapReadyC
     }
 
     public void setBusinessData(ArrayList<Business> businessData){
+        if(businesses != null){
+            businesses.clear();
+        }
         businesses = businessData;
         addMapMarkers();
     }

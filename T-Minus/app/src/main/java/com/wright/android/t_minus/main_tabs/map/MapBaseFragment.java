@@ -23,11 +23,18 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.wright.android.t_minus.R;
+import com.wright.android.t_minus.objects.Business;
+import com.wright.android.t_minus.objects.ViewingLocation;
 import com.wright.android.t_minus.settings.PreferencesActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -39,6 +46,7 @@ public class MapBaseFragment extends Fragment {
     public CustomMapFragment customMapFragment;
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private LocationManager locMgr;
+    private DatabaseReference mDatabaseRef;
 
     public MapBaseFragment() {
         // Required empty public constructor
@@ -54,6 +62,7 @@ public class MapBaseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference();
         locMgr = (LocationManager) Objects.requireNonNull(getContext()).getSystemService(LOCATION_SERVICE);
     }
 
@@ -75,6 +84,13 @@ public class MapBaseFragment extends Fragment {
                 showLocationDialog();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getBusinessesData();
+        getMapData();
     }
 
     private void showLocationDialog(){
@@ -203,5 +219,68 @@ public class MapBaseFragment extends Fragment {
                 }
             }
         }
+    }
+
+    private void getMapData(){
+        mDatabaseRef.child("viewing_locations").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                String key = dataSnapshot.getKey();
+                customMapFragment.removeViewingLocation(key);
+            }
+
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                customMapFragment.addViewingLocation(new ViewingLocation(
+                        dataSnapshot.getKey(),
+                        (String) dataSnapshot.child("name").getValue(),
+                        (double) dataSnapshot.child("latitude").getValue(),
+                        (double) dataSnapshot.child("longitude").getValue()));
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getBusinessesData(){
+        mDatabaseRef.child("businesses").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<Business> businessArrayList = new ArrayList<>();
+                for(DataSnapshot singleSnap: dataSnapshot.getChildren()){
+                    boolean verified = (boolean)singleSnap.child("isVerified").getValue();
+                    if (verified){
+                        DataSnapshot detailsSnap = singleSnap.child("details");
+                        businessArrayList.add(new Business(
+                                singleSnap.getKey(),
+                                (boolean)singleSnap.child("isVerified").getValue(),
+                                (String)detailsSnap.child("name").getValue(),
+                                (String)detailsSnap.child("number").getValue(),
+                                (double)detailsSnap.child("latitude").getValue(),
+                                (double)detailsSnap.child("longitude").getValue(),
+                                (String) detailsSnap.child("address").getValue(),
+                                (String)detailsSnap.child("description").getValue()));
+                    }
+                }
+                customMapFragment.setBusinessData(businessArrayList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
