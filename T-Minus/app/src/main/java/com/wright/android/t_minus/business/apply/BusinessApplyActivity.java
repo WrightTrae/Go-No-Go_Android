@@ -89,10 +89,12 @@ public class BusinessApplyActivity extends AppCompatActivity implements Business
         DatabaseReference userRef = databaseReference.child("users").child(user.getUid());
         HashMap<String, Object> userMap = new HashMap<>();
         userMap.put("admin_in_progress", true);
+        userRef.updateChildren(userMap);
+
+        DatabaseReference businessRef = databaseReference.child("users").child(user.getUid()).child("businesses");
         HashMap<String, Object> businessMap = new HashMap<>();
         businessMap.put(businessId, businessName);
-        userMap.put("businesses", businessMap);
-        userRef.updateChildren(userMap);
+        businessRef.updateChildren(businessMap);
     }
 
     private void saveBusiness(String name, String number, double latitude, double longitude, String address){
