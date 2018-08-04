@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.wright.android.t_minus.R;
@@ -22,6 +23,7 @@ public class BusinessViewFragment extends Fragment {
     private TextView description;
     private TextView phone;
     private TextView address;
+    private TextView[] businessTimes;
 //    private TextView mondayOpen;
 //    private TextView mondayClose;
 //    private TextView tuesdayOpen;
@@ -81,20 +83,43 @@ public class BusinessViewFragment extends Fragment {
         address = view.findViewById(R.id.business_view_address);
         name = view.findViewById(R.id.business_view_name);
         description = view.findViewById(R.id.business_view_description);
-//        mondayOpen = view.findViewById(R.id.business_view_monday_open_hours);
-//        mondayClose = view.findViewById(R.id.business_view_monday_close_hours);
-//        tuesdayOpen = view.findViewById(R.id.business_view_tuesday_open_hours);
-//        tuesdayClose = view.findViewById(R.id.business_view_tuesday_close_hours);
-//        wednesdayOpen = view.findViewById(R.id.business_view_wednesday_open_hours);
-//        wednesdayClose = view.findViewById(R.id.business_view_wednesday_close_hours);
-//        thursdayOpen = view.findViewById(R.id.business_view_thursday_open_hours);
-//        thursdayClose = view.findViewById(R.id.business_view_thursday_close_hours);
-//        fridayOpen = view.findViewById(R.id.business_view_friday_open_hours);
-//        fridayClose = view.findViewById(R.id.business_view_friday_close_hours);
-//        saturdayOpen = view.findViewById(R.id.business_view_saturday_open_hours);
-//        saturdayClose = view.findViewById(R.id.business_view_saturday_close_hours);
-//        sundayOpen = view.findViewById(R.id.business_view_sunday_open_hours);
-//        sundayClose = view.findViewById(R.id.business_view_sunday_close_hours);
+        businessTimes = new TextView[]{
+                view.findViewById(R.id.business_view_monday_hours),
+                view.findViewById(R.id.business_view_tuesday_open_hours),
+                view.findViewById(R.id.business_view_wednesday_hours),
+                view.findViewById(R.id.business_view_thursday_hours),
+                view.findViewById(R.id.business_view_friday_open_hours),
+                view.findViewById(R.id.business_view_saturday_hours),
+                view.findViewById(R.id.business_view_sunday_hours),
+        };
+        for (TextView dayTime: businessTimes){
+            dayTime.setText("11am to 11pm");
+//            for (EditText timeText: dayTime){
+//                timeText.setOnClickListener((View v)->{
+//                    TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(),
+//                            (TimePicker picker, int hourOfDay, int minute) -> {
+//
+//                    }, 12, 0, false);
+//                    timePickerDialog.show();
+//                    InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+//                });
+//            }
+        }
+//        mondayOpen = view.findViewById(R.id.business_view_monday_hours);
+//        mondayClose = view.findViewById(R.id.business_view_monday_hours);
+//        tuesdayOpen = view.findViewById(R.id.business_view_tuesday_hours);
+//        tuesdayClose = view.findViewById(R.id.business_view_tuesday_hours);
+//        wednesdayOpen = view.findViewById(R.id.business_view_wednesday_hours);
+//        wednesdayClose = view.findViewById(R.id.business_view_wednesday_hours);
+//        thursdayOpen = view.findViewById(R.id.business_view_thursday_hours);
+//        thursdayClose = view.findViewById(R.id.business_view_thursday_hours);
+//        fridayOpen = view.findViewById(R.id.business_view_friday_hours);
+//        fridayClose = view.findViewById(R.id.business_view_friday_hours);
+//        saturdayOpen = view.findViewById(R.id.business_view_saturday_hours);
+//        saturdayClose = view.findViewById(R.id.business_view_saturday_hours);
+//        sundayOpen = view.findViewById(R.id.business_view_sunday_hours);
+//        sundayClose = view.findViewById(R.id.business_view_sunday_hours);
 //        specials = view.findViewById(R.id.business_view_specials);
     }
 }

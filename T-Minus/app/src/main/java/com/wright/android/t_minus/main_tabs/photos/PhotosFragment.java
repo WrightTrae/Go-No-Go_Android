@@ -68,7 +68,7 @@ public class PhotosFragment extends Fragment {
         super.onResume();
         if(checkForSignIn(false)){
             photoAdapter.resetData();
-            getLikedImages();//TODO
+            getLikedImages();//TODO: DEPLOYMENT
         }
     }
 
@@ -110,11 +110,10 @@ public class PhotosFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         GridView gridView = view.findViewById(R.id.photoGrid);
-        photoAdapter = new PhotoAdapter(getContext());//TODO
+        photoAdapter = new PhotoAdapter(getContext());//TODO: DEPLOYMENT
         gridView.setAdapter(photoAdapter);
         if(checkForSignIn(false)){
             resetPushPath();
-            getLikedImages();
             FloatingActionButton fab = view.findViewById(R.id.photo_capture_fab);
             fab.setOnClickListener((View v) -> showDataFromFAB());
         }

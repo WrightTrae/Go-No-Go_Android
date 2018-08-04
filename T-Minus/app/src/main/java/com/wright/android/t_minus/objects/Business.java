@@ -12,6 +12,7 @@ public class Business implements Serializable{
     private double longitude;
     private String address;
     private String description;
+    private String specials;
 
     public Business(String id, boolean isVerified, String name, String number, double latitude, double longitude, String address, String description) {
         this.id = id;
@@ -24,6 +25,10 @@ public class Business implements Serializable{
         this.description = description;
     }
 
+    public void setSpecials(String specials) {
+        this.specials = specials;
+    }
+
     public HashMap<String, Object> getDetailsMap(){
         HashMap<String, Object> businessDetailMap = new HashMap<>();
         businessDetailMap.put("name", name);
@@ -33,6 +38,7 @@ public class Business implements Serializable{
         businessDetailMap.put("number", number);
         businessDetailMap.put("description", description);
         businessDetailMap.put("hours_of_operation", null);
+//        businessDetailMap.put("specials", specials);
         return businessDetailMap;
     }
 

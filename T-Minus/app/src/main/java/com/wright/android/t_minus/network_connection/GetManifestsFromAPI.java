@@ -42,14 +42,14 @@ public class GetManifestsFromAPI extends AsyncTask<String, Void, Manifest[]> {
         ArrayList<Manifest> ManifestArrayList = new ArrayList<>();
 
 
-        //TODO: Test Manifest
-        SimpleDateFormat testdf = new SimpleDateFormat("MMM dd, yyyy hh:mm a",Locale.getDefault());
-        testdf.setTimeZone(TimeZone.getDefault());
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, 60);
-        String testFormattedDate = testdf.format(calendar.getTime());
-        ManifestArrayList.add(new Manifest(ManifestDetailsActivity.testLaunchID, "Go/No-Go Test Launch", testFormattedDate,
-                "https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png", null,null, null));
+//        //TODO: Test Manifest
+//        SimpleDateFormat testdf = new SimpleDateFormat("MMM dd, yyyy hh:mm a",Locale.getDefault());
+//        testdf.setTimeZone(TimeZone.getDefault());
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.add(Calendar.MINUTE, 60);
+//        String testFormattedDate = testdf.format(calendar.getTime());
+//        ManifestArrayList.add(new Manifest(ManifestDetailsActivity.testLaunchID, "Go/No-Go Test Launch", testFormattedDate,
+//                "https://s3.amazonaws.com/launchlibrary/RocketImages/placeholder_1920.png", null,null, null));
 
 
         try {

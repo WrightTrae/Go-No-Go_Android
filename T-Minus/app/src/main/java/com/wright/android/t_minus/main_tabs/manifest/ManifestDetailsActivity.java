@@ -147,7 +147,7 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
         }
         ((TextView)findViewById(R.id.detailsDescription)).setText(manifestDetails.getDescription());
 
-        Button notifBtn = findViewById(R.id.detailsNotifBtn);
+        Button notifBtn = findViewById(R.id.detailsNotifBtn);//TODO: add saving data to phone or firebase
         notifBtn.setOnClickListener((View v) -> {
             if(manifest.getTimeDate() == null){
                 return;
@@ -158,8 +158,6 @@ public class ManifestDetailsActivity extends AppCompatActivity implements GetMan
             cal.setTime(manifest.getTimeDate());
             int minutes = Integer.parseInt(getSharedPreferences(PreferencesFragment.PREFS, MODE_PRIVATE).getString(PreferencesFragment.NOTIF_PREF, "30"));
             cal.add(Calendar.MINUTE , -minutes);
-            DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
-            Toast.makeText(this, dateFormat.format(cal.getTime()),Toast.LENGTH_SHORT).show();
             notificationHelper.setAlarmForNotification(cal, manifest);
         });
 
