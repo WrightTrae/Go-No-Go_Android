@@ -3,8 +3,7 @@
 ### Download Instructions
 
 * Download all files from repo
-* Test repo is the branch that should be pulled from for all new features for now
-* Known bug with AR and the Nexus 5x phone on the test branch, main branch solves this problem but less accurate object placement and no new features… yet
+* Known bug with AR and the Nexus 5x phone on the test branch, main branch solves this problem but less accurate object placement
 * Launch project through Android Studio
 * Build Project
 * Project requires internet connection
