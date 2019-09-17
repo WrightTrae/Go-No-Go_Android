@@ -1,5 +1,5 @@
 # Go/No-Go Android GitHub Repo
-
+ ## *This is not the production repo and has been depricated
 ### Download Instructions
 
 * Download all files from repo
